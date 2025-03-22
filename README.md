@@ -1,4 +1,4 @@
-# CroshCounter 🧶
+# CrochCounter 🧶
 
 Android application for my girlfriend to count her rows.
 
