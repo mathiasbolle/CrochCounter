@@ -23,29 +23,43 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import be.mbolle.crochcounter.R
 import be.mbolle.crochcounter.ui.composables.Button
 import be.mbolle.crochcounter.ui.composables.Counter
+import be.mbolle.crochcounter.ui.theme.CrochCounterViewModel
 
 @Preview
 @Composable
 fun CrochCounterApp(modifier: Modifier = Modifier) {
+    val crocherCounterViewModel: CrochCounterViewModel = viewModel()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color(0XFFFEE2E9),
         topBar = {
-            TopCrocherBar()
+            TopCrocherBar(
+                decreaseValue = { crocherCounterViewModel.subtractCounterByOne() },
+                resetValue = { crocherCounterViewModel.resetCounter() }
+            )
         }
     ) { innerPadding ->
-        CrosherContent(modifier = Modifier
-            .padding(innerPadding)
-            .fillMaxSize())
+        CrosherContent(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize(),
+            increaseValue = { crocherCounterViewModel.addCounterByOne() },
+            value = crocherCounterViewModel.counter.toString()
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopCrocherBar(modifier: Modifier = Modifier) {
+fun TopCrocherBar(
+    modifier: Modifier = Modifier,
+    decreaseValue: () -> Unit,
+    resetValue: () -> Unit
+) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color(0XFFFFD6E0),
@@ -56,13 +70,19 @@ fun TopCrocherBar(modifier: Modifier = Modifier) {
         },
 
         actions = {
-            IconButton(onClick = { /* do something! */ }, colors = IconButtonDefaults.iconButtonColors(contentColor = Color(0XFFFF8CA7))) {
+            IconButton(
+                onClick = { decreaseValue() },
+                colors = IconButtonDefaults.iconButtonColors(contentColor = Color(0XFFFF8CA7))
+            ) {
                 Icon(
                     imageVector = Icons.Sharp.Add,
                     contentDescription = stringResource(R.string.subtract_btn)
                 )
             }
-            IconButton(onClick = { /* do something! */ },  colors = IconButtonDefaults.iconButtonColors(contentColor = Color(0XFFFF8CA7))) {
+            IconButton(
+                onClick = { resetValue() },
+                colors = IconButtonDefaults.iconButtonColors(contentColor = Color(0XFFFF8CA7))
+            ) {
                 Icon(
                     imageVector = Icons.Filled.Notifications,
                     contentDescription = stringResource(R.string.reset_btn)
@@ -73,12 +93,15 @@ fun TopCrocherBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun CrosherContent(modifier: Modifier = Modifier) {
+fun CrosherContent(modifier: Modifier = Modifier, increaseValue: () -> Unit, value: String) {
     Box(modifier = Modifier.fillMaxSize()) {
-        Counter(value = "1", modifier = Modifier.height(200.dp).align(Alignment.Center))
-        Button(modifier = Modifier
-            .fillMaxWidth()
-            .align(Alignment.BottomCenter)
-            , onClick = {}, label = "Add row")
+        Counter(value = value, modifier = Modifier
+            .height(200.dp)
+            .align(Alignment.Center))
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter), onClick = { increaseValue() }, label = "Add row"
+        )
     }
 }
