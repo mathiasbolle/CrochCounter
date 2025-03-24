@@ -1,10 +1,14 @@
 package be.mbolle.crochcounter.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.sharp.Add
@@ -34,7 +38,10 @@ import be.mbolle.crochcounter.ui.theme.CrochCounterViewModel
 fun CrochCounterApp(modifier: Modifier = Modifier) {
     val crocherCounterViewModel: CrochCounterViewModel = viewModel()
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.background(color = Color(0XFFFFD6E0)).
+        statusBarsPadding().
+        background(color = Color(0XFFFEE2E9)).systemBarsPadding()
+            .fillMaxSize(),
         containerColor = Color(0XFFFEE2E9),
         topBar = {
             TopCrocherBar(
