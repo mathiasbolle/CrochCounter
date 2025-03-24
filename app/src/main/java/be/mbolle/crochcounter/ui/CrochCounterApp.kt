@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,7 +37,9 @@ import be.mbolle.crochcounter.ui.theme.CrochCounterViewModel
 @Preview
 @Composable
 fun CrochCounterApp(modifier: Modifier = Modifier) {
-    val crocherCounterViewModel: CrochCounterViewModel = viewModel()
+    val crocherCounterViewModel: CrochCounterViewModel = viewModel(factory = CrochCounterViewModelFactory(
+        LocalContext.current
+    ))
     Scaffold(
         modifier = Modifier.background(color = Color(0XFFFFD6E0)).
         statusBarsPadding().
