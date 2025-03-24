@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -85,7 +86,7 @@ fun TopCrocherBar(
                 colors = IconButtonDefaults.iconButtonColors(contentColor = Color(0XFFFF8CA7))
             ) {
                 Icon(
-                    imageVector = Icons.Sharp.Add,
+                    painter = painterResource(R.drawable.remove_icon),
                     contentDescription = stringResource(R.string.subtract_btn)
                 )
             }
@@ -94,7 +95,7 @@ fun TopCrocherBar(
                 colors = IconButtonDefaults.iconButtonColors(contentColor = Color(0XFFFF8CA7))
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Notifications,
+                    painter = painterResource(R.drawable.restart_icon),
                     contentDescription = stringResource(R.string.reset_btn)
                 )
             }
