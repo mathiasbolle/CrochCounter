@@ -13,6 +13,10 @@ class CrochCounterViewModel(val counterRepository: CounterRepository): ViewModel
         private set
 
     init {
+        initValue()
+    }
+
+    fun initValue() {
         viewModelScope.launch {
             counter = counterRepository.getCounter()
         }

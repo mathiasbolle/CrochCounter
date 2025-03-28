@@ -17,7 +17,6 @@ class MainActivity : ComponentActivity() {
     private var serviceIntent: Intent? = null
 
     private val crochCounterViewModel by lazy {
-
         ViewModelProvider(
             this,
             CrochCounterViewModelFactory.getInstance(this)

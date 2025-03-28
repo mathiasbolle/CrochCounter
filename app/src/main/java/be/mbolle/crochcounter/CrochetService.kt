@@ -79,7 +79,7 @@ class CrochetService(): Service(), ViewModelStoreOwner {
         composeView?.setContent {
 
 
-            PopupWindow(counter = crochCounterViewModel.counter)
+            PopupWindow(counter = crochCounterViewModel.counter, addValue = { crochCounterViewModel.addCounterByOne() })
 
 
         }
