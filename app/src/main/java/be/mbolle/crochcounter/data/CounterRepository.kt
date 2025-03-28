@@ -16,8 +16,22 @@ interface CounterRepository {
     suspend fun reset()
 }
 
-class CounterDatastoreRepository(val context: Context): CounterRepository {
+class CounterDatastoreRepository private constructor(val context: Context): CounterRepository {
     val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "counter")
+
+    companion object {
+
+        @Volatile
+        private var instance: CounterRepository? = null
+
+        fun getInstance(context: Context): CounterRepository {
+            return instance ?: synchronized(this) {
+                instance
+                    ?: CounterDatastoreRepository(context).also { instance = it }
+            }
+        }
+
+    }
 
     private val counterKey = intPreferencesKey("counterValue")
     override suspend fun getCounter(): Int {

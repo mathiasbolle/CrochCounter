@@ -6,12 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.sharp.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,23 +20,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import be.mbolle.crochcounter.R
 import be.mbolle.crochcounter.ui.composables.Button
 import be.mbolle.crochcounter.ui.composables.Counter
 import be.mbolle.crochcounter.ui.theme.CrochCounterViewModel
 
-@Preview
+
 @Composable
-fun CrochCounterApp(modifier: Modifier = Modifier) {
-    val crocherCounterViewModel: CrochCounterViewModel = viewModel(factory = CrochCounterViewModelFactory(
-        LocalContext.current
-    ))
+fun CrochCounterApp(modifier: Modifier = Modifier, crochCounterViewModel: CrochCounterViewModel) {
+
     Scaffold(
         modifier = Modifier.background(color = Color(0XFFFFD6E0)).
         statusBarsPadding().
@@ -49,8 +40,8 @@ fun CrochCounterApp(modifier: Modifier = Modifier) {
         containerColor = Color(0XFFFEE2E9),
         topBar = {
             TopCrocherBar(
-                decreaseValue = { crocherCounterViewModel.subtractCounterByOne() },
-                resetValue = { crocherCounterViewModel.resetCounter() }
+                decreaseValue = { crochCounterViewModel.subtractCounterByOne() },
+                resetValue = { crochCounterViewModel.resetCounter() }
             )
         }
     ) { innerPadding ->
@@ -58,8 +49,8 @@ fun CrochCounterApp(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
-            increaseValue = { crocherCounterViewModel.addCounterByOne() },
-            value = crocherCounterViewModel.counter.toString()
+            increaseValue = { crochCounterViewModel.addCounterByOne() },
+            value = crochCounterViewModel.counter.toString()
         )
     }
 }
