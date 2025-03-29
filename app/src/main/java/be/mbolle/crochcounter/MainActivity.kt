@@ -8,6 +8,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.ViewModelProvider
+import be.mbolle.crochcounter.service.Actions
+import be.mbolle.crochcounter.service.CrochetService
 import be.mbolle.crochcounter.ui.CrochCounterApp
 import be.mbolle.crochcounter.ui.CrochCounterViewModelFactory
 import be.mbolle.crochcounter.ui.theme.CrochCounterTheme
