@@ -13,7 +13,7 @@ import be.mbolle.crochcounter.service.CrochetService
 import be.mbolle.crochcounter.ui.CrochCounterApp
 import be.mbolle.crochcounter.ui.CrochCounterViewModelFactory
 import be.mbolle.crochcounter.ui.theme.CrochCounterTheme
-import be.mbolle.crochcounter.ui.theme.CrochCounterViewModel
+import be.mbolle.crochcounter.ui.CrochCounterViewModel
 
 class MainActivity : ComponentActivity() {
     private val crochCounterViewModel by lazy {

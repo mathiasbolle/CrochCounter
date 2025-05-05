@@ -1,4 +1,4 @@
-package be.mbolle.crochcounter.ui.theme
+package be.mbolle.crochcounter.ui
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -35,9 +35,26 @@ class CrochCounterViewModel(val counterRepository: CounterRepository) : ViewMode
         }
     }
 
+
+    fun makeEditProjectInvisible() {
+        crochCounterState = crochCounterState.copy(editProjectState = crochCounterState.editProjectState.copy(isVisible = false))
+
+    }
+
+    fun setTitleEditDialog(title: String) {
+        crochCounterState = crochCounterState.copy(editProjectState = crochCounterState.editProjectState.copy(text = title))
+    }
+
     fun makeCreateProjectDialogVisible() {
         Log.d("CrochCounterViewModel", crochCounterState.createProjectState.toString())
         crochCounterState = crochCounterState.copy(createProjectState = crochCounterState.createProjectState.copy(isVisible = true))
+    }
+
+    fun makeEditProjectDialogVisible() {
+        Log.d("CrochCounterViewModel2", crochCounterState.editProjectState.toString())
+
+        crochCounterState = crochCounterState.copy(editProjectState = crochCounterState.editProjectState.copy(isVisible = true))
+
     }
 
     fun makeCreateProjectDialogInvisible() {
@@ -112,6 +129,8 @@ class CrochCounterViewModel(val counterRepository: CounterRepository) : ViewMode
             refreshCache()
         }
     }
+
+
 
     fun renameProject(newName: String) {
         viewModelScope.launch {

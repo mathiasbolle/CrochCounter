@@ -1,14 +1,5 @@
 package be.mbolle.crochcounter.data
 
-import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-
 interface CounterRepository {
     suspend fun setProjectInactive(project: String)
     suspend fun setProjectActive(project: String)
@@ -115,7 +106,7 @@ class CounterRoomRepository(private val crochDao: CrochDao): CounterRepository {
     }
 
     override suspend fun deleteProject(project: String) {
-        crochDao.deleteProject(CrochProject(name = project))
+        crochDao.deleteProject(name = project)
     }
 
     override suspend fun renameProject(oldName: String, newName: String) {

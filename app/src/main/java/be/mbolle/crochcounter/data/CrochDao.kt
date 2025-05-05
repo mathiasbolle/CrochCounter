@@ -1,16 +1,13 @@
 package be.mbolle.crochcounter.data
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
 
 @Dao
 interface CrochDao {
     @Query("UPDATE crochProjects SET is_active = :active WHERE name = :name")
     suspend fun editActiveProject(active: Boolean, name: String)
-
 
     @Query("SELECT * FROM crochProjects")
     suspend fun getAllProjects(): List<CrochProject>
@@ -21,8 +18,8 @@ interface CrochDao {
     @Query("SELECT * FROM crochProjects WHERE name = :project")
     suspend fun getProject(project: String): CrochProject
 
-    @Delete
-    suspend fun deleteProject(crochProject: CrochProject)
+    @Query("DELETE FROM crochProjects WHERE name = :name")
+    suspend fun deleteProject(name: String)
 
     @Query("UPDATE crochProjects SET value = :value WHERE name = :name")
     suspend fun editProject(value: Int, name: String)

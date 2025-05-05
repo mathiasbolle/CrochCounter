@@ -36,7 +36,7 @@ import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import be.mbolle.crochcounter.MyLifecycleOwner
 import be.mbolle.crochcounter.ui.CrochCounterViewModelFactory
 import be.mbolle.crochcounter.ui.composables.PopupWindow
-import be.mbolle.crochcounter.ui.theme.CrochCounterViewModel
+import be.mbolle.crochcounter.ui.CrochCounterViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt

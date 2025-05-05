@@ -6,11 +6,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
@@ -27,6 +30,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -34,6 +38,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -45,6 +50,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -52,7 +58,6 @@ import be.mbolle.crochcounter.R
 import be.mbolle.crochcounter.model.CrochCounter
 import be.mbolle.crochcounter.ui.composables.Button
 import be.mbolle.crochcounter.ui.composables.Counter
-import be.mbolle.crochcounter.ui.theme.CrochCounterViewModel
 
 
 @Composable
@@ -80,7 +85,7 @@ fun CrochCounterApp(modifier: Modifier = Modifier, crochCounterViewModel: CrochC
                 makeProjectVisible = { crochCounterViewModel.makeCreateProjectDialogVisible() },
                 decreaseValue = { crochCounterViewModel.subtractCounterByOne() },
                 resetValue = { crochCounterViewModel.resetCounter() },
-                editProjectName = { newProject -> crochCounterViewModel.renameProject(newProject) },
+                editProjectName = { crochCounterViewModel.makeEditProjectDialogVisible() },
                 deleteCurrentProject = { crochCounterViewModel.removeProject() }
             )
         }
@@ -97,10 +102,9 @@ fun CrochCounterApp(modifier: Modifier = Modifier, crochCounterViewModel: CrochC
 
         if (!crochCounterViewModel.crochCounterState.list.isEmpty()) {
             if (crochCounterViewModel.crochCounterState.createProjectState.isVisible) {
-                CrochCounterProjectCreation(
+                CrochCounterProjectDialog(
                     text = crochCounterViewModel.crochCounterState.createProjectState.text ?: "",
                     openAlertDialog = crochCounterViewModel.crochCounterState.createProjectState.isVisible,
-                    makeProjectVisible = { crochCounterViewModel.makeCreateProjectDialogVisible() },
                     makeProjectInvisible = { crochCounterViewModel.makeCreateProjectDialogInvisible() },
                     setTextOfDialog = { text -> crochCounterViewModel.setTitleProjectDialog(text) },
                     createProject = { project ->
@@ -110,6 +114,25 @@ fun CrochCounterApp(modifier: Modifier = Modifier, crochCounterViewModel: CrochC
                     })
 
             }
+
+            if (crochCounterViewModel.crochCounterState.editProjectState.isVisible) {
+                Log.d(
+                    "CrochCounterApp",
+                    crochCounterViewModel.crochCounterState.editProjectState.isVisible.toString()
+                )
+                CrochCounterEditProjectDialog(
+                    text = crochCounterViewModel.crochCounterState.editProjectState.text ?: "",
+                    openAlertDialog = crochCounterViewModel.crochCounterState.editProjectState.isVisible,
+                    makeProjectInvisible = { crochCounterViewModel.makeEditProjectInvisible() },
+                    setTextOfDialog = { text -> crochCounterViewModel.setTitleEditDialog(text) },
+                    editProjectName = { projectName ->
+                        crochCounterViewModel.renameProject(
+                            projectName
+                        )
+                    }
+                )
+            }
+
             CrosherContent(
                 modifier = Modifier
                     .padding(innerPadding)
@@ -119,10 +142,9 @@ fun CrochCounterApp(modifier: Modifier = Modifier, crochCounterViewModel: CrochC
                 project = crochCounterViewModel.crochCounterState.name!!
             )
         } else {
-            CrochCounterProjectCreation(
+            CrochCounterProjectDialog(
                 text = crochCounterViewModel.crochCounterState.createProjectState.text ?: "",
                 openAlertDialog = crochCounterViewModel.crochCounterState.createProjectState.isVisible,
-                makeProjectVisible = { crochCounterViewModel.makeCreateProjectDialogVisible() },
                 makeProjectInvisible = { crochCounterViewModel.makeCreateProjectDialogInvisible() },
                 setTextOfDialog = { text -> crochCounterViewModel.setTitleProjectDialog(text) },
                 createProject = { project ->
@@ -146,7 +168,7 @@ fun TopCrocherBar(
     makeProjectVisible: () -> Unit,
     decreaseValue: () -> Unit,
     resetValue: () -> Unit,
-    editProjectName: (String) -> Unit,
+    editProjectName: () -> Unit,
     deleteCurrentProject: () -> Unit
 ) {
     TopAppBar(
@@ -160,7 +182,7 @@ fun TopCrocherBar(
                     projects = projects,
                     makeProjectVisible = { makeProjectVisible() },
                     activeProject = currentProject,
-                    editProjectName = { name -> editProjectName(name) },
+                    editProjectName = { editProjectName() },
                     deleteCurrentProject = { deleteCurrentProject() },
                     switchProject = { oldProject, newProject ->
                         switchProject(
@@ -206,10 +228,9 @@ fun TopCrocherBar(
 }
 
 @Composable
-fun CrochCounterProjectCreation(
+fun CrochCounterProjectDialog(
     text: String,
     openAlertDialog: Boolean,
-    makeProjectVisible: () -> Unit,
     makeProjectInvisible: () -> Unit,
     setTextOfDialog: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -220,48 +241,44 @@ fun CrochCounterProjectCreation(
 
     when {
         openAlertDialog -> {
-            AlertDialog(
-                icon = {
-                    Icon(Icons.Default.Info, contentDescription = "Example Icon")
-                },
-                title = {
-                    Text(text = "Create a new project")
-                },
-                text = {
-
-                    TextField(
-                        value = text,
-                        onValueChange = { setTextOfDialog(it) },
-                        label = { Text("Name") }
-                    )
-                },
-                onDismissRequest = {
-                    makeProjectInvisible()
-                },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            createProject(text)
-                            makeProjectInvisible()
-                        }
-                    ) {
-                        Text("Confirm")
-                    }
-                },
-                dismissButton = {
-                    TextButton(
-                        onClick = {
-                            makeProjectInvisible()
-                        }
-                    ) {
-                        Text("Dismiss")
-                    }
-                }
+            InputDialog(
+                text = text,
+                title = "Create a new project",
+                inputLabel = "Name",
+                openAlertDialog = openAlertDialog,
+                makeDialogInvisible = { makeProjectInvisible() },
+                setTextOfDialog = { value -> setTextOfDialog(value) },
+                confirmationAction = { createProject(text) }
             )
         }
     }
-
 }
+
+@Composable
+fun CrochCounterEditProjectDialog(
+    text: String,
+    openAlertDialog: Boolean,
+    makeProjectInvisible: () -> Unit,
+    setTextOfDialog: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    editProjectName: (project: String) -> Unit
+
+) {
+    when {
+        openAlertDialog -> {
+            InputDialog(
+                text = text,
+                title = "Edit the name",
+                inputLabel = "Name",
+                openAlertDialog = openAlertDialog,
+                makeDialogInvisible = { makeProjectInvisible() },
+                setTextOfDialog = { value -> setTextOfDialog(value) },
+                confirmationAction = { editProjectName(text) }
+            )
+        }
+    }
+}
+
 
 @Composable
 fun CrosherContent(
@@ -290,7 +307,7 @@ fun CrosherContent(
 fun ProjectDropdownMenu(
     modifier: Modifier = Modifier,
     activeProject: String,
-    editProjectName: (String) -> Unit,
+    editProjectName: () -> Unit,
     deleteCurrentProject: () -> Unit,
     switchProject: (oldProject: String, newProject: String) -> Unit,
     projects: List<CrochCounter>,
@@ -313,20 +330,83 @@ fun ProjectDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            projects.forEach { project ->
+                projects.forEach { project ->
+                    DropdownMenuItem(
+                        text = {
+                            CrochProject(
+                                project = project,
+                                deleteCurrentProject = { deleteCurrentProject() },
+                                editProjectName = { editProjectName() }
+                            )
+                        },
+                        onClick = { switchProject(activeProject, project.name!!) }
+                    )
+                }
                 DropdownMenuItem(
-                    text = { CrochProject(
-                        project = project, deleteCurrentProject = { deleteCurrentProject() },
-                        editProjectName = { }
-                    ) },
-                    onClick = { switchProject(activeProject, project.name!!) }
+                    text = { Text("New Project") },
+                    onClick = {
+                        makeProjectVisible()
+                        expanded = false
+                    }
                 )
-            }
-            DropdownMenuItem(
-                text = { Text("Create new project") },
-                onClick = {
-                    makeProjectVisible()
-                    expanded = false
+
+
+        }
+    }
+}
+
+@Composable
+fun InputDialog(
+    title: String,
+    inputLabel: String,
+    text: String,
+    openAlertDialog: Boolean,
+    makeDialogInvisible: () -> Unit,
+    setTextOfDialog: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    confirmationAction: () -> Unit
+) {
+
+    Log.d("CrochCounterApp", openAlertDialog.toString())
+
+    when {
+        openAlertDialog -> {
+            AlertDialog(
+                icon = {
+                    Icon(Icons.Default.Info, contentDescription = "Example Icon")
+                },
+                title = {
+                    Text(text = title)
+                },
+                text = {
+
+                    TextField(
+                        value = text,
+                        onValueChange = { setTextOfDialog(it) },
+                        label = { Text(inputLabel) }
+                    )
+                },
+                onDismissRequest = {
+                    makeDialogInvisible()
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            confirmationAction()
+                            makeDialogInvisible()
+                        }
+                    ) {
+                        Text("Confirm")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = {
+                            makeDialogInvisible()
+                        }
+                    ) {
+                        Text("Dismiss")
+                    }
                 }
             )
         }
@@ -336,29 +416,37 @@ fun ProjectDropdownMenu(
 @Composable
 fun CrochProject(
     modifier: Modifier = Modifier, project: CrochCounter,
-    editProjectName: (String) -> Unit, // enable a state variable in the VM that shows a dialog.
+    editProjectName: () -> Unit, // enable a state variable in the VM that shows a dialog.
     deleteCurrentProject: () -> Unit,
 ) {
-    Row(modifier = modifier, horizontalArrangement = Arrangement.SpaceBetween) {
+    Row(modifier = modifier, horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
         Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
             Text(project.name!!)
         }
 
+
+        Spacer(modifier = Modifier.sizeIn(minWidth = 30.dp))
+
         Row {
+            CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
 
-            IconButton(
-                onClick = { },
-                colors = IconButtonDefaults.iconButtonColors(contentColor = Color(0XFFFF8CA7))
-            ) {
-                Icon(Icons.Default.Edit, contentDescription = "edit")
+                IconButton(
+                    onClick = { editProjectName() },
+                    colors = IconButtonDefaults.iconButtonColors(contentColor = Color(0XFFFF8CA7))
+                ) {
+                    Icon(Icons.Default.Edit, contentDescription = "edit")
+                }
+
+                IconButton(
+                    modifier = Modifier.defaultMinSize(minWidth = 1.dp, minHeight = 1.dp),
+                    onClick = { deleteCurrentProject() },
+                    colors = IconButtonDefaults.iconButtonColors(contentColor = Color(0XFFFF8CA7))
+                ) {
+                    Icon(Icons.Default.Delete, contentDescription = "Delete")
+                }
+
             }
 
-            IconButton(
-                onClick = { deleteCurrentProject() },
-                colors = IconButtonDefaults.iconButtonColors(contentColor = Color(0XFFFF8CA7))
-            ) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete")
-            }
         }
     }
 }
