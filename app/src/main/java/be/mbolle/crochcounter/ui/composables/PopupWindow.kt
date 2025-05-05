@@ -14,14 +14,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PopupWindow(modifier: Modifier = Modifier, counter: Int, addValue: () -> Unit) {
+fun PopupWindow(modifier: Modifier = Modifier, counter: Int, project: String, addValue: () -> Unit) {
     Box(modifier = Modifier
         .width(300.dp)
         .height(200.dp)
         .background(color = Color(0XFFFFD6E0), shape = RoundedCornerShape(5.dp)).clickable { addValue() }) {
 
         Column(modifier = Modifier.align(alignment = Alignment.Center)) {
-            Counter(value = "$counter", modifier = Modifier
+            Counter(value = "$counter", project = project, modifier = Modifier
                 .height(200.dp))
         }
     }

@@ -54,13 +54,10 @@ class CrochetService(): Service(), ViewModelStoreOwner {
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
                 WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
-        //WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-        //WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
         PixelFormat.TRANSLUCENT
     ).apply {
         gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
     }
-
 
     internal val overlayContext: Context by lazy {
         // Get the default display
@@ -112,7 +109,7 @@ class CrochetService(): Service(), ViewModelStoreOwner {
 
         composeView?.setContent {
             OverlayDraggableContainer {
-                PopupWindow(counter = crochCounterViewModel.counter, addValue = { crochCounterViewModel.addCounterByOne() })
+                PopupWindow(counter = crochCounterViewModel.crochCounterState.counter, addValue = { crochCounterViewModel.addCounterByOne() }, project = crochCounterViewModel.crochCounterState.name.toString())
             }
 
         }

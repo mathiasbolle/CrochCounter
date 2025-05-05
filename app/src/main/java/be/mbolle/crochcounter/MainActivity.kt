@@ -16,8 +16,6 @@ import be.mbolle.crochcounter.ui.theme.CrochCounterTheme
 import be.mbolle.crochcounter.ui.theme.CrochCounterViewModel
 
 class MainActivity : ComponentActivity() {
-    private var serviceIntent: Intent? = null
-
     private val crochCounterViewModel by lazy {
         ViewModelProvider(
             this,
@@ -25,12 +23,16 @@ class MainActivity : ComponentActivity() {
         )[CrochCounterViewModel::class.java]
     }
 
+    private var serviceIntent: Intent? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("MainActivity", "on create is called")
         super.onCreate(savedInstanceState)
 
         if (!Settings.canDrawOverlays(this)) {
             startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION))
+            Log.d("MainActivity", "start activity!")
+
         }
 
         enableEdgeToEdge()
@@ -43,11 +45,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onPause() {
         super.onPause()
-        if (Settings.canDrawOverlays(this)) {
-            Log.d("MainActivity", "this is called")
+
+        if (Settings.canDrawOverlays(this) && crochCounterViewModel.isOverlayEnabled) {
+            Log.d("MainActivity", "pause activity!")
             serviceIntent = Intent(this, CrochetService::class.java)
             serviceIntent?.action = Actions.START.toString()
-
 
             startService(serviceIntent)
         }
@@ -56,14 +58,10 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
 
-        if (serviceIntent?.action != null) {
+        if (serviceIntent?.action != null && crochCounterViewModel.isOverlayEnabled) {
             serviceIntent = Intent(this, CrochetService::class.java)
             serviceIntent?.action = Actions.STOP.toString()
             startService(serviceIntent)
         }
-
-        Log.d("MainActivity", "it is running now kill it")
-
-        // check if service is running
     }
 }
