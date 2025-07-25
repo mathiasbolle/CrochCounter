@@ -3,4 +3,5 @@
     <string name="subtract_btn">Subtract counter with 1</string>
     <string name="reset_btn">Reset counter</string>
     <string name="add_btn">Add a Row</string>
+    <string name="project_title">My Projects</string>
 </resources>

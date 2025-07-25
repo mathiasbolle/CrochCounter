@@ -1,20 +1,67 @@
 package be.mbolle.crochcounter
 
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.lifecycle.ViewModelProvider
+import be.mbolle.crochcounter.service.Actions
+import be.mbolle.crochcounter.service.CrochetService
 import be.mbolle.crochcounter.ui.CrochCounterApp
+import be.mbolle.crochcounter.ui.CrochCounterViewModelFactory
 import be.mbolle.crochcounter.ui.theme.CrochCounterTheme
+import be.mbolle.crochcounter.ui.CrochCounterViewModel
 
 class MainActivity : ComponentActivity() {
+    private val crochCounterViewModel by lazy {
+        ViewModelProvider(
+            this,
+            CrochCounterViewModelFactory.getInstance(this)
+        )[CrochCounterViewModel::class.java]
+    }
+
+    private var serviceIntent: Intent? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (!Settings.canDrawOverlays(this)) {
+            startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION))
+            Log.d("MainActivity", "start activity!")
+
+        }
+
         enableEdgeToEdge()
         setContent {
             CrochCounterTheme {
-                CrochCounterApp()
+                CrochCounterApp(crochCounterViewModel = crochCounterViewModel)
             }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        if (Settings.canDrawOverlays(this) && crochCounterViewModel.isOverlayEnabled) {
+            Log.d("MainActivity", "pause activity!")
+            serviceIntent = Intent(this, CrochetService::class.java)
+            serviceIntent?.action = Actions.START.toString()
+
+            startService(serviceIntent)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (serviceIntent?.action != null && crochCounterViewModel.isOverlayEnabled) {
+            serviceIntent = Intent(this, CrochetService::class.java)
+            serviceIntent?.action = Actions.STOP.toString()
+            startService(serviceIntent)
         }
     }
 }
