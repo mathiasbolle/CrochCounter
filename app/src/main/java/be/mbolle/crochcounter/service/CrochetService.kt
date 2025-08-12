@@ -13,15 +13,19 @@ import android.view.Gravity
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.AndroidUiDispatcher
 import androidx.compose.ui.platform.ComposeView
@@ -42,11 +46,11 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @RequiresApi(Build.VERSION_CODES.R)
-class CrochetService(): Service(), ViewModelStoreOwner {
+class CrochetService() : Service(), ViewModelStoreOwner {
     val windowManager get() = overlayContext.getSystemService(WINDOW_SERVICE) as WindowManager
     var composeView: ComposeView? = null
 
-    private val layoutParams =WindowManager.LayoutParams(
+    private val layoutParams = WindowManager.LayoutParams(
         WindowManager.LayoutParams.WRAP_CONTENT,
         WindowManager.LayoutParams.WRAP_CONTENT,
         WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
@@ -61,16 +65,16 @@ class CrochetService(): Service(), ViewModelStoreOwner {
 
     internal val overlayContext: Context by lazy {
         // Get the default display
-        val defaultDisplay: Display = getSystemService(DisplayManager::class.java).getDisplay(Display.DEFAULT_DISPLAY)
+        val defaultDisplay: Display =
+            getSystemService(DisplayManager::class.java).getDisplay(Display.DEFAULT_DISPLAY)
         // Create a display context, and then the window context
         createDisplayContext(defaultDisplay)
             .createWindowContext(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY, null)
     }
 
 
-
     override fun onBind(intent: Intent?): IBinder? {
-         return null
+        return null
     }
 
     override fun onStartCommand(
@@ -109,7 +113,11 @@ class CrochetService(): Service(), ViewModelStoreOwner {
 
         composeView?.setContent {
             OverlayDraggableContainer {
-                PopupWindow(counter = crochCounterViewModel.crochCounterState.counter, addValue = { crochCounterViewModel.addCounterByOne() }, project = crochCounterViewModel.crochCounterState.name.toString())
+                PopupWindow(
+                    counter = crochCounterViewModel.crochCounterState.counter,
+                    addValue = { crochCounterViewModel.addCounterByOne() },
+                    project = crochCounterViewModel.crochCounterState.name.toString()
+                )
             }
 
         }
@@ -145,29 +153,44 @@ class CrochetService(): Service(), ViewModelStoreOwner {
 
 
     private var overlayOffset by mutableStateOf(Offset.Zero)
+    private var scale by mutableStateOf(1f)
+
 
     @Composable
-    internal fun OverlayDraggableContainer(modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) =
+    internal fun OverlayDraggableContainer(
+        modifier: Modifier = Modifier,
+        content: @Composable BoxScope.() -> Unit
+    ) {
+        val state = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
+            scale *= zoomChange
+        }
+
         Box(
-            modifier = modifier.pointerInput(Unit) {
-                detectDragGestures { change, dragAmount ->
-                    change.consume()
+            modifier = modifier
+                .graphicsLayer(
+                    scaleX = scale,
+                    scaleY = scale,
+                )
+                .transformable(state = state)
+                .pointerInput(Unit) {
+                    detectDragGestures { change, dragAmount ->
+                        change.consume()
 
-                    // Update our current offset
-                    val newOffset = overlayOffset+ dragAmount
-                    overlayOffset = newOffset
+                        // Update our current offset
+                        val newOffset = overlayOffset + dragAmount
+                        overlayOffset = newOffset
 
-                    // Update the layout params, and then the view
-                    layoutParams.apply {
-                        x = overlayOffset.x.roundToInt()
-                        y = overlayOffset.y.roundToInt()
+                        // Update the layout params, and then the view
+                        layoutParams.apply {
+                            x = overlayOffset.x.roundToInt()
+                            y = overlayOffset.y.roundToInt()
+                        }
+                        windowManager.updateViewLayout(composeView, layoutParams)
                     }
-                    windowManager.updateViewLayout(composeView, layoutParams)
-                }
-            },
+                },
             content = content
         )
-
+    }
 }
 
 enum class Actions {

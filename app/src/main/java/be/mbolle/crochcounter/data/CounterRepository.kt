@@ -3,7 +3,7 @@ package be.mbolle.crochcounter.data
 interface CounterRepository {
     suspend fun setProjectInactive(project: String)
     suspend fun setProjectActive(project: String)
-    suspend fun getAllProjects(): List<CrochProject>
+    suspend fun getAllProjects(): List<CrochProject?>
     suspend fun getActiveProject(): CrochProject
     suspend fun deleteProject(project: String)
     suspend fun createProject(project: String)
@@ -15,58 +15,6 @@ interface CounterRepository {
     suspend fun resetCounterOfProject(project: String)
 }
 
-/*
-class CounterDatastoreRepository private constructor(val context: Context): CounterRepository {
-    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "counter")
-
-    companion object {
-
-        @Volatile
-        private var instance: CounterRepository? = null
-
-        fun getInstance(context: Context): CounterRepository {
-            return instance ?: synchronized(this) {
-                instance
-                    ?: CounterDatastoreRepository(context).also { instance = it }
-            }
-        }
-
-    }
-
-    private val counterKey = intPreferencesKey("counterValue")
-    override suspend fun getCounter(): Int {
-        val flow = context.dataStore.data.map { preferences ->
-            preferences[counterKey] ?: 0
-        }
-
-        return flow.first()
-    }
-
-    override suspend fun incrementBy(value: Int) {
-        context.dataStore.edit { counter ->
-            val currentCounter = counter[counterKey] ?: 0
-
-            counter[counterKey] = currentCounter+value
-        }
-    }
-
-    override suspend fun decreaseBy(value: Int) {
-        context.dataStore.edit { counter ->
-            val currentCounter = counter[counterKey] ?: 0
-
-            counter[counterKey] = currentCounter-value
-        }
-    }
-
-    override suspend fun reset() {
-        context.dataStore.edit { counter ->
-            counter[counterKey] = 0
-        }
-    }
-}
-
- */
-
 class CounterRoomRepository(private val crochDao: CrochDao): CounterRepository {
     override suspend fun setProjectInactive(project: String) {
         crochDao.editActiveProject(false, project)
@@ -76,7 +24,7 @@ class CounterRoomRepository(private val crochDao: CrochDao): CounterRepository {
         crochDao.editActiveProject(true, project)
     }
 
-    override suspend fun getAllProjects(): List<CrochProject> {
+    override suspend fun getAllProjects(): List<CrochProject?> {
         return crochDao.getAllProjects()
     }
 
@@ -85,7 +33,6 @@ class CounterRoomRepository(private val crochDao: CrochDao): CounterRepository {
     }
 
     override suspend fun getInfoFromProject(project: String): CrochProject {
-        //crochDao.editProject()
         return crochDao.getProject(project)
     }
 

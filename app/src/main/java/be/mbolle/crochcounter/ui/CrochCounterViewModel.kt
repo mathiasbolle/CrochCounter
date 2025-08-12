@@ -31,39 +31,53 @@ class CrochCounterViewModel(val counterRepository: CounterRepository) : ViewMode
         viewModelScope.launch {
             counterRepository.createProject(project)
 
-            switchProject(oldProject = crochCounterState.name!!, project)
+            if (crochCounterState.name != null) {
+                switchProject(oldProject = crochCounterState.name!!, project)
+            } else {
+                refreshCache()
+            }
         }
     }
 
 
     fun makeEditProjectInvisible() {
-        crochCounterState = crochCounterState.copy(editProjectState = crochCounterState.editProjectState.copy(isVisible = false))
-
+        crochCounterState = crochCounterState.copy(
+            editProjectState = crochCounterState.editProjectState.copy(isVisible = false)
+        )
     }
 
     fun setTitleEditDialog(title: String) {
-        crochCounterState = crochCounterState.copy(editProjectState = crochCounterState.editProjectState.copy(text = title))
+        crochCounterState =
+            crochCounterState.copy(editProjectState = crochCounterState.editProjectState.copy(text = title))
     }
 
     fun makeCreateProjectDialogVisible() {
         Log.d("CrochCounterViewModel", crochCounterState.createProjectState.toString())
-        crochCounterState = crochCounterState.copy(createProjectState = crochCounterState.createProjectState.copy(isVisible = true))
+        crochCounterState = crochCounterState.copy(
+            createProjectState = crochCounterState.createProjectState.copy(isVisible = true)
+        )
     }
 
     fun makeEditProjectDialogVisible() {
         Log.d("CrochCounterViewModel2", crochCounterState.editProjectState.toString())
 
-        crochCounterState = crochCounterState.copy(editProjectState = crochCounterState.editProjectState.copy(isVisible = true))
+        crochCounterState = crochCounterState.copy(
+            editProjectState = crochCounterState.editProjectState.copy(isVisible = true)
+        )
 
     }
 
     fun makeCreateProjectDialogInvisible() {
-        crochCounterState = crochCounterState.copy(createProjectState = crochCounterState.createProjectState.copy(isVisible = false))
+        crochCounterState = crochCounterState.copy(
+            createProjectState = crochCounterState.createProjectState.copy(isVisible = false)
+        )
     }
 
 
     fun setTitleProjectDialog(title: String) {
-        crochCounterState = crochCounterState.copy(createProjectState = crochCounterState.createProjectState.copy(text = title))
+        crochCounterState = crochCounterState.copy(
+            createProjectState = crochCounterState.createProjectState.copy(text = title)
+        )
     }
 
 
@@ -77,12 +91,15 @@ class CrochCounterViewModel(val counterRepository: CounterRepository) : ViewMode
                     counter = counterRepository.getActiveProject().value,
                     list = counterRepository.getAllProjects().map { projects ->
                         CrochCounter(
-                            name = projects.name,
-                            counter = projects.value,
-                            id = projects.id
+                            name = projects?.name,
+                            counter = projects?.value ?: 0,
+                            id = projects?.id ?: 0
                         )
                     }
                 )
+            } else {
+                crochCounterState = CrochCounterState()
+
             }
         }
     }
@@ -121,15 +138,16 @@ class CrochCounterViewModel(val counterRepository: CounterRepository) : ViewMode
     }
 
     fun removeProject() {
+        Log.d("CrochCounterViewModel", "remove project..")
         viewModelScope.launch {
             counterRepository.deleteProject(crochCounterState.name!!)
-            val randomProject = counterRepository.getAllProjects().random().name
-            counterRepository.setProjectActive(randomProject)
-
+            if (crochCounterState.list.size > 1) {
+                val randomProject = counterRepository.getAllProjects().random()?.name
+                counterRepository.setProjectActive(randomProject.toString())
+            }
             refreshCache()
         }
     }
-
 
 
     fun renameProject(newName: String) {

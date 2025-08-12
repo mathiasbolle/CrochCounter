@@ -22,7 +22,6 @@ class MainActivity : ComponentActivity() {
             CrochCounterViewModelFactory.getInstance(this)
         )[CrochCounterViewModel::class.java]
     }
-
     private var serviceIntent: Intent? = null
 
 
@@ -58,10 +57,13 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
 
-        if (serviceIntent?.action != null && crochCounterViewModel.isOverlayEnabled) {
-            serviceIntent = Intent(this, CrochetService::class.java)
-            serviceIntent?.action = Actions.STOP.toString()
-            startService(serviceIntent)
-        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        serviceIntent = Intent(this, CrochetService::class.java)
+        serviceIntent?.action = Actions.STOP.toString()
+        startService(serviceIntent)
     }
 }

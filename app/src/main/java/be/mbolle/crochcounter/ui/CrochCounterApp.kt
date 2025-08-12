@@ -19,24 +19,15 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -48,16 +39,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import be.mbolle.crochcounter.R
 import be.mbolle.crochcounter.model.CrochCounter
-import be.mbolle.crochcounter.ui.composables.Button
+import be.mbolle.crochcounter.ui.composables.base.Button
 import be.mbolle.crochcounter.ui.composables.Counter
+import be.mbolle.crochcounter.ui.composables.TopCrocherBar
+import be.mbolle.crochcounter.ui.composables.base.InputDialog
 
 
 @Composable
@@ -90,7 +82,6 @@ fun CrochCounterApp(modifier: Modifier = Modifier, crochCounterViewModel: CrochC
             )
         }
     ) { innerPadding ->
-
         val lifecycleOwner = LocalLifecycleOwner.current
         val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
 
@@ -112,7 +103,6 @@ fun CrochCounterApp(modifier: Modifier = Modifier, crochCounterViewModel: CrochC
                             project
                         )
                     })
-
             }
 
             if (crochCounterViewModel.crochCounterState.editProjectState.isVisible) {
@@ -154,77 +144,6 @@ fun CrochCounterApp(modifier: Modifier = Modifier, crochCounterViewModel: CrochC
                 })
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopCrocherBar(
-    modifier: Modifier = Modifier,
-    currentProject: String,
-    projects: List<CrochCounter>,
-    enableServiceValue: Boolean,
-    switchProject: (oldProject: String, newProject: String) -> Unit,
-    onCheckboxValueChange: (Boolean) -> Unit,
-    makeProjectVisible: () -> Unit,
-    decreaseValue: () -> Unit,
-    resetValue: () -> Unit,
-    editProjectName: () -> Unit,
-    deleteCurrentProject: () -> Unit
-) {
-    TopAppBar(
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color(0XFFFFD6E0),
-            titleContentColor = Color(0XFFFF8CA7),
-        ),
-        title = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                ProjectDropdownMenu(
-                    projects = projects,
-                    makeProjectVisible = { makeProjectVisible() },
-                    activeProject = currentProject,
-                    editProjectName = { editProjectName() },
-                    deleteCurrentProject = { deleteCurrentProject() },
-                    switchProject = { oldProject, newProject ->
-                        switchProject(
-                            oldProject,
-                            newProject
-                        )
-                    })
-                Text(stringResource(R.string.project_title))
-            }
-        },
-
-        actions = {
-            IconButton(
-                onClick = { decreaseValue() },
-                colors = IconButtonDefaults.iconButtonColors(contentColor = Color(0XFFFF8CA7))
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.remove_icon),
-                    contentDescription = stringResource(R.string.subtract_btn)
-                )
-            }
-
-            IconButton(
-                onClick = { resetValue() },
-                colors = IconButtonDefaults.iconButtonColors(contentColor = Color(0XFFFF8CA7))
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.restart_icon),
-                    contentDescription = stringResource(R.string.reset_btn)
-                )
-            }
-
-            Checkbox(
-                checked = enableServiceValue,
-                onCheckedChange = { isChecked -> onCheckboxValueChange(isChecked) },
-                colors = CheckboxDefaults.colors(
-                    checkedColor = Color(0XFFFF8CA7),
-                    uncheckedColor = Color(0XFFFF8CA7)
-                )
-            )
-        }
-    )
 }
 
 @Composable
@@ -327,6 +246,7 @@ fun ProjectDropdownMenu(
         }
 
         DropdownMenu(
+            modifier = Modifier.semantics(properties = {contentDescription = "projects"}),
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
@@ -350,68 +270,10 @@ fun ProjectDropdownMenu(
                     }
                 )
 
-
         }
     }
 }
 
-@Composable
-fun InputDialog(
-    title: String,
-    inputLabel: String,
-    text: String,
-    openAlertDialog: Boolean,
-    makeDialogInvisible: () -> Unit,
-    setTextOfDialog: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    confirmationAction: () -> Unit
-) {
-
-    Log.d("CrochCounterApp", openAlertDialog.toString())
-
-    when {
-        openAlertDialog -> {
-            AlertDialog(
-                icon = {
-                    Icon(Icons.Default.Info, contentDescription = "Example Icon")
-                },
-                title = {
-                    Text(text = title)
-                },
-                text = {
-
-                    TextField(
-                        value = text,
-                        onValueChange = { setTextOfDialog(it) },
-                        label = { Text(inputLabel) }
-                    )
-                },
-                onDismissRequest = {
-                    makeDialogInvisible()
-                },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            confirmationAction()
-                            makeDialogInvisible()
-                        }
-                    ) {
-                        Text("Confirm")
-                    }
-                },
-                dismissButton = {
-                    TextButton(
-                        onClick = {
-                            makeDialogInvisible()
-                        }
-                    ) {
-                        Text("Dismiss")
-                    }
-                }
-            )
-        }
-    }
-}
 
 @Composable
 fun CrochProject(

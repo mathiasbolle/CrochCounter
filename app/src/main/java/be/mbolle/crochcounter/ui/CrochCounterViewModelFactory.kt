@@ -8,7 +8,7 @@ import be.mbolle.crochcounter.data.CounterRepository
 import be.mbolle.crochcounter.data.CounterRoomRepository
 import be.mbolle.crochcounter.data.CrochDatabase
 
-class CrochCounterViewModelFactory private constructor(private val context: Context): ViewModelProvider.Factory {
+class CrochCounterViewModelFactory(private val context: Context): ViewModelProvider.Factory {
 
     companion object {
         @SuppressLint("StaticFieldLeak")
