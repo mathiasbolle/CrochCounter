@@ -1,4 +1,4 @@
-package be.mbolle.crochcounter.ui.composables
+package be.mbolle.crochcounter.projects.presentation.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,15 +14,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PopupWindow(modifier: Modifier = Modifier, counter: Int, project: String, addValue: () -> Unit) {
-    Box(modifier = Modifier
-        .width(300.dp)
-        .height(200.dp)
-        .background(color = Color(0XFFFFD6E0), shape = RoundedCornerShape(5.dp)).clickable { addValue() }) {
-
+fun PopupWindow(
+    modifier: Modifier = Modifier,
+    counter: Int, project: String,
+    addValue: () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .width(300.dp)
+            .height(200.dp)
+            .background(color = Color(0XFFFFD6E0), shape = RoundedCornerShape(5.dp))
+            .clickable { addValue() }) {
         Column(modifier = Modifier.align(alignment = Alignment.Center)) {
-            Counter(value = "$counter", project = project, modifier = Modifier
-                .height(200.dp))
+            Counter(
+                value = "$counter", project = project, modifier = Modifier
+                    .height(200.dp)
+            )
         }
     }
 }

@@ -1,4 +1,4 @@
-package be.mbolle.crochcounter.data
+package be.mbolle.crochcounter.projects.data
 
 interface CounterRepository {
     suspend fun setProjectInactive(project: String)

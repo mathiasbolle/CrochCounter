@@ -27,10 +27,10 @@ class MenuBarTest {
     @Before
     fun before() {
         rule.setContent {
-            val crocherCounterViewModel: CrochCounterViewModel = viewModel(factory = CrochCounterViewModelFactory(
+            val crochCounterViewModel: CrochCounterViewModel = viewModel(factory = CrochCounterViewModelFactory(
                 LocalContext.current
             ))
-            CrochCounterApp(crochCounterViewModel = crocherCounterViewModel)
+            CrochCounterApp(crochCounterViewModel = crochCounterViewModel)
         }
 
         rule.onNodeWithContentDescription("show projects").performClick()

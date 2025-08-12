@@ -1,4 +1,4 @@
-package be.mbolle.crochcounter.ui.composables
+package be.mbolle.crochcounter.projects.presentation.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +25,6 @@ import be.mbolle.crochcounter.R
 fun Counter(modifier: Modifier = Modifier, value: String, project: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         Box(modifier.semantics(properties = {contentDescription = "counter"})) {
-
             Image(
                 painter = painterResource(R.drawable.yarn),
                 contentDescription = "background yarn",

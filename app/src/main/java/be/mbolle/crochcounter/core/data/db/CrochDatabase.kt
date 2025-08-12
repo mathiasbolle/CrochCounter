@@ -1,9 +1,11 @@
-package be.mbolle.crochcounter.data
+package be.mbolle.crochcounter.core.data.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import be.mbolle.crochcounter.projects.data.CrochDao
+import be.mbolle.crochcounter.projects.data.CrochProject
 
 @Database(entities = [CrochProject::class], version = 1)
 abstract class CrochDatabase : RoomDatabase() {

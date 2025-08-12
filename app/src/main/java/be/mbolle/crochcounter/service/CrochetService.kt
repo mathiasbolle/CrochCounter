@@ -20,8 +20,8 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -37,9 +37,8 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.setViewTreeLifecycleOwner
 import androidx.lifecycle.setViewTreeViewModelStoreOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
-import be.mbolle.crochcounter.MyLifecycleOwner
 import be.mbolle.crochcounter.ui.CrochCounterViewModelFactory
-import be.mbolle.crochcounter.ui.composables.PopupWindow
+import be.mbolle.crochcounter.projects.presentation.composables.PopupWindow
 import be.mbolle.crochcounter.ui.CrochCounterViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -47,6 +46,9 @@ import kotlin.math.roundToInt
 
 @RequiresApi(Build.VERSION_CODES.R)
 class CrochetService() : Service(), ViewModelStoreOwner {
+
+    private var overlayOffset by mutableStateOf(Offset.Zero)
+    private var scale by mutableFloatStateOf(1f)
     val windowManager get() = overlayContext.getSystemService(WINDOW_SERVICE) as WindowManager
     var composeView: ComposeView? = null
 
@@ -138,22 +140,17 @@ class CrochetService() : Service(), ViewModelStoreOwner {
 
         val coroutineContext = AndroidUiDispatcher.CurrentThread
         val runRecomposeScope = CoroutineScope(coroutineContext)
-        val recomposer = Recomposer(coroutineContext)
-        composeView?.compositionContext = recomposer
+        val scheduler = Recomposer(coroutineContext)
+        composeView?.compositionContext = scheduler
         runRecomposeScope.launch {
-            recomposer.runRecomposeAndApplyChanges()
+            scheduler.runRecomposeAndApplyChanges()
         }
-
         windowManager.addView(composeView, params)
-
     }
 
     override val viewModelStore: ViewModelStore
         get() = ViewModelStore()
 
-
-    private var overlayOffset by mutableStateOf(Offset.Zero)
-    private var scale by mutableStateOf(1f)
 
 
     @Composable

@@ -1,4 +1,4 @@
-package be.mbolle.crochcounter.data
+package be.mbolle.crochcounter.projects.data
 
 import androidx.room.Dao
 import androidx.room.Insert

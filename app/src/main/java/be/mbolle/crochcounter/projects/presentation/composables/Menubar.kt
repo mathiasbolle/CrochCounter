@@ -1,4 +1,4 @@
-package be.mbolle.crochcounter.ui.composables
+package be.mbolle.crochcounter.projects.presentation.composables
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Checkbox
@@ -12,18 +12,16 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import be.mbolle.crochcounter.R
-import be.mbolle.crochcounter.model.CrochCounter
-import be.mbolle.crochcounter.ui.ProjectDropdownMenu
+import be.mbolle.crochcounter.projects.model.CrochCounter
+import be.mbolle.crochcounter.projects.presentation.composables.base.ProjectDropdownMenu
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopCrocherBar(
-    modifier: Modifier = Modifier,
+fun TopCrochBar(
     currentProject: String,
     projects: List<CrochCounter>,
     enableServiceValue: Boolean,
@@ -42,7 +40,7 @@ fun TopCrocherBar(
         ),
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                ProjectDropdownMenu(
+                ProjectDropdownMenu (
                     projects = projects,
                     makeProjectVisible = { makeProjectVisible() },
                     activeProject = currentProject,

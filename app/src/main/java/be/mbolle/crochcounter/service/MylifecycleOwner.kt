@@ -1,4 +1,4 @@
-package be.mbolle.crochcounter
+package be.mbolle.crochcounter.service
 
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
@@ -10,10 +10,9 @@ import androidx.savedstate.SavedStateRegistryOwner
 internal class MyLifecycleOwner : SavedStateRegistryOwner {
 
     private var mLifecycleRegistry: LifecycleRegistry = LifecycleRegistry(this)
-    private var mSavedStateRegistryController: SavedStateRegistryController = SavedStateRegistryController.create(this)
+    private var mSavedStateRegistryController: SavedStateRegistryController =
+        SavedStateRegistryController.create(this)
 
-    val isInitialized: Boolean
-        get() = true
     override val savedStateRegistry: SavedStateRegistry
         get() = mSavedStateRegistryController.savedStateRegistry
 
@@ -21,19 +20,11 @@ internal class MyLifecycleOwner : SavedStateRegistryOwner {
     override val lifecycle: Lifecycle
         get() = mLifecycleRegistry
 
-    fun setCurrentState(state: Lifecycle.State) {
-        mLifecycleRegistry.currentState = state
-    }
-
     fun handleLifecycleEvent(event: Lifecycle.Event) {
         mLifecycleRegistry.handleLifecycleEvent(event)
     }
 
     fun performRestore(savedState: Bundle?) {
         mSavedStateRegistryController.performRestore(savedState)
-    }
-
-    fun performSave(outBundle: Bundle) {
-        mSavedStateRegistryController.performSave(outBundle)
     }
 }

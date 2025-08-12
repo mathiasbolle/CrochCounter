@@ -1,4 +1,4 @@
-package be.mbolle.crochcounter.ui.composables.base
+package be.mbolle.crochcounter.projects.presentation.composables.base
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

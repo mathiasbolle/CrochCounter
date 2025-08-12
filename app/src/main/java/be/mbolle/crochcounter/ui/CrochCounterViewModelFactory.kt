@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import be.mbolle.crochcounter.data.CounterRepository
-import be.mbolle.crochcounter.data.CounterRoomRepository
-import be.mbolle.crochcounter.data.CrochDatabase
+import be.mbolle.crochcounter.projects.data.CounterRepository
+import be.mbolle.crochcounter.projects.data.CounterRoomRepository
+import be.mbolle.crochcounter.core.data.db.CrochDatabase
 
 class CrochCounterViewModelFactory(private val context: Context): ViewModelProvider.Factory {
 

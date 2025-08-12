@@ -16,6 +16,7 @@ import be.mbolle.crochcounter.ui.theme.CrochCounterTheme
 import be.mbolle.crochcounter.ui.CrochCounterViewModel
 
 class MainActivity : ComponentActivity() {
+
     private val crochCounterViewModel by lazy {
         ViewModelProvider(
             this,

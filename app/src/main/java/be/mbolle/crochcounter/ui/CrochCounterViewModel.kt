@@ -6,12 +6,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import be.mbolle.crochcounter.data.CounterRepository
-import be.mbolle.crochcounter.model.CrochCounter
-import be.mbolle.crochcounter.model.CrochCounterState
+import be.mbolle.crochcounter.projects.data.CounterRepository
+import be.mbolle.crochcounter.projects.model.CrochCounter
 import kotlinx.coroutines.launch
 
 class CrochCounterViewModel(val counterRepository: CounterRepository) : ViewModel() {
+
     var crochCounterState by mutableStateOf(CrochCounterState())
         private set
 
