@@ -13,9 +13,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import be.mbolle.crochcounter.projects.presentation.composables.Counter
+import be.mbolle.crochcounter.projects.presentation.composables.CrochCounterEditProjectDialog
 import be.mbolle.crochcounter.projects.presentation.composables.CrochCounterProjectDialog
 import be.mbolle.crochcounter.projects.presentation.composables.base.Button
-import be.mbolle.crochcounter.projects.presentation.composables.base.InputDialog
 import be.mbolle.crochcounter.ui.CrochCounterViewModel
 
 @Composable
@@ -63,8 +63,7 @@ fun ProjectScreen(
         )
 
 
-
-    }else {
+    } else {
         CrochCounterProjectDialog(
             text = crochCounterViewModel.crochCounterState.createProjectState.text ?: "",
             openAlertDialog = crochCounterViewModel.crochCounterState.createProjectState.isVisible,
@@ -75,30 +74,6 @@ fun ProjectScreen(
                     project
                 )
             })
-    }
-}
-
-@Composable
-fun CrochCounterEditProjectDialog(
-    text: String,
-    openAlertDialog: Boolean,
-    makeProjectInvisible: () -> Unit,
-    setTextOfDialog: (String) -> Unit,
-    editProjectName: (project: String) -> Unit
-
-) {
-    when {
-        openAlertDialog -> {
-            InputDialog(
-                text = text,
-                title = "Edit the name",
-                inputLabel = "Name",
-                openAlertDialog = true,
-                makeDialogInvisible = { makeProjectInvisible() },
-                setTextOfDialog = { value -> setTextOfDialog(value) },
-                confirmationAction = { editProjectName(text) }
-            )
-        }
     }
 }
 
