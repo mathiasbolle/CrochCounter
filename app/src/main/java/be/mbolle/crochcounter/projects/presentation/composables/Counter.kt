@@ -23,8 +23,13 @@ import be.mbolle.crochcounter.R
 
 @Composable
 fun Counter(modifier: Modifier = Modifier, value: String, project: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        Box(modifier.semantics(properties = {contentDescription = "counter"})) {
+    Column(
+        modifier = modifier
+        ,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center) {
+        Box(Modifier
+            .semantics(properties = {contentDescription = "counter"})) {
             Image(
                 painter = painterResource(R.drawable.yarn),
                 contentDescription = "background yarn",
@@ -40,10 +45,9 @@ fun Counter(modifier: Modifier = Modifier, value: String, project: String) {
                 modifier = Modifier.align(alignment = Alignment.Center)
             )
         }
-
         Text(
-
-            modifier = Modifier.padding(top = 20.dp).semantics(properties = {contentDescription = "Project name counter"}),
+            modifier = Modifier.padding(top = 20.dp)
+                .semantics(properties = {contentDescription = "Project name counter"}),
             text = project,
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
