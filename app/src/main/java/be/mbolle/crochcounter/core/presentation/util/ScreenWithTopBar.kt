@@ -1,18 +1,29 @@
-package be.mbolle.crochcounter.ui
+package be.mbolle.crochcounter.core.presentation.util
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import be.mbolle.crochcounter.core.presentation.navigation.CrochCounterRoot
-
+import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import be.mbolle.crochcounter.projects.presentation.composables.TopCrochBar
+import be.mbolle.crochcounter.ui.CrochCounterViewModel
 
 @Composable
-fun CrochCounterApp(
-    modifier: Modifier = Modifier,
-) {
-    CrochCounterRoot(
-        modifier = modifier
-    )
-    /*
+fun ScreenWithTopBar(modifier: Modifier = Modifier,
+                     crochCounterViewModel: CrochCounterViewModel,
+
+                     navigateToProject: () -> Unit,
+                     screen: @Composable () -> Unit) {
     Scaffold(
         modifier = modifier
             .background(color = Color(0XFFFFD6E0))
@@ -23,6 +34,10 @@ fun CrochCounterApp(
         containerColor = Color(0XFFFEE2E9),
         topBar = {
             TopCrochBar(
+                navigateToProjects = {
+                    navigateToProject()
+
+                },
                 currentProject = crochCounterViewModel.crochCounterState.name ?: "",
                 projects = crochCounterViewModel.crochCounterState.list,
                 enableServiceValue = crochCounterViewModel.isOverlayEnabled,
@@ -50,13 +65,8 @@ fun CrochCounterApp(
             }
         }
 
-        screen()
-
-        ProjectScreen(
-            crochCounterViewModel = crochCounterViewModel,
-            innerPadding = innerPadding
-        )
+        Box(modifier = modifier.padding(innerPadding)) {
+            screen()
+        }
     }
-     */
 }
-

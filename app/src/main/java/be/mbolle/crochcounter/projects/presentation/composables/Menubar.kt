@@ -31,7 +31,9 @@ fun TopCrochBar(
     decreaseValue: () -> Unit,
     resetValue: () -> Unit,
     editProjectName: () -> Unit,
-    deleteCurrentProject: () -> Unit
+    deleteCurrentProject: () -> Unit,
+
+    navigateToProjects: () -> Unit
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -41,17 +43,19 @@ fun TopCrochBar(
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 ProjectDropdownMenu (
-                    projects = projects,
-                    makeProjectVisible = { makeProjectVisible() },
-                    activeProject = currentProject,
-                    editProjectName = { editProjectName() },
-                    deleteCurrentProject = { deleteCurrentProject() },
-                    switchProject = { oldProject, newProject ->
-                        switchProject(
-                            oldProject,
-                            newProject
-                        )
-                    })
+//                    projects = projects,
+//                    makeProjectVisible = { makeProjectVisible() },
+//                    activeProject = currentProject,
+//                    editProjectName = { editProjectName() },
+//                    deleteCurrentProject = { deleteCurrentProject() },
+//                    switchProject = { oldProject, newProject ->
+//                        switchProject(
+//                            oldProject,
+//                            newProject
+//                        )
+//                    }
+                    navigateToProjects = { navigateToProjects() }
+                )
                 Text(stringResource(R.string.project_title))
             }
         },

@@ -27,7 +27,7 @@ import be.mbolle.crochcounter.ui.theme.CrochCounterTheme
 @Composable
 fun ProjectScreen(
     crochCounterViewModel: CrochCounterViewModel,
-    innerPadding: PaddingValues
+    innerPadding: PaddingValues = PaddingValues()
 ) {
     val previewPattern = Pattern(
         1,
