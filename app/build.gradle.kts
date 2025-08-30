@@ -41,9 +41,6 @@ android {
 }
 
 dependencies {
-
-    val room_version = "2.7.1"
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -52,15 +49,14 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-
-    implementation("androidx.room:room-runtime:$room_version")
-
+    implementation(libs.androidx.room.runtime)
     // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
     // See Add the KSP plugin to your project
-    ksp("androidx.room:room-compiler:$room_version")
-
+    ksp(libs.androidx.room.compiler)
+    testImplementation(libs.mockito.core) // Core Mockito library
+    testImplementation(libs.mockito.kotlin) // Mockito-Kotlin extensions
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:$room_version")
+    implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.datastore.preferences)
     testImplementation(libs.junit)

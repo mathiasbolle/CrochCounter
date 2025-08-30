@@ -1,4 +1,4 @@
-package be.mbolle.crochcounter.service
+package be.mbolle.crochcounter.projects.service
 
 import android.app.Service
 import android.content.Context
