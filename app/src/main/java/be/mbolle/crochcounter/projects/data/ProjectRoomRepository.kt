@@ -1,19 +1,36 @@
 package be.mbolle.crochcounter.projects.data
 
-import be.mbolle.crochcounter.core.model.CounterRepository
+import be.mbolle.crochcounter.core.model.ProjectRepository
 
+fun Project.toModel(): be.mbolle.crochcounter.projects.model.Project {
+    return be.mbolle.crochcounter.projects.model.Project(
+        name = this.name,
+        counter = this.value
+    )
+}
 
-class CounterRoomRepository(private val projectDao: ProjectDao): CounterRepository {
+class ProjectRoomRepository(private val projectDao: ProjectDao) : ProjectRepository {
+
+    override suspend fun getAllProjects(): List<be.mbolle.crochcounter.projects.model.Project> {
+        return projectDao.getAllProjects().map { it.toModel() }
+    }
+
+    /**
+     * Pattern should be created before a project
+     */
+    override suspend fun createProject(project: String): Project? {
+        val projectId =
+            projectDao.createProject(Project(name = project, value = 0, isActive = true))
+
+        return projectDao.getProjectById(projectId.toInt())
+    }
+
     override suspend fun setProjectInactive(project: String) {
         projectDao.editActiveProject(false, project)
     }
 
     override suspend fun setProjectActive(project: String) {
         projectDao.editActiveProject(true, project)
-    }
-
-    override suspend fun getAllProjects(): List<Project?> {
-        return projectDao.getAllProjects()
     }
 
     override suspend fun getActiveProject(): Project {
@@ -25,20 +42,18 @@ class CounterRoomRepository(private val projectDao: ProjectDao): CounterReposito
     }
 
     override suspend fun increaseCounterOfProject(project: String, value: Int) {
-        return projectDao.editProject(value+1, project)
+        return projectDao.editProject(value + 1, project)
     }
 
     override suspend fun decreaseCounterOfProject(project: String, value: Int) {
-        return projectDao.editProject(value-1, project)
+        return projectDao.editProject(value - 1, project)
     }
 
     override suspend fun resetCounterOfProject(project: String) {
         return projectDao.editProject(0, project)
     }
 
-    override suspend fun createProject(project: String) {
-        projectDao.createProject(Project(name = project, value = 0, isActive = true))
-    }
+
 
     override suspend fun deleteProject(project: String) {
         projectDao.deleteProject(name = project)

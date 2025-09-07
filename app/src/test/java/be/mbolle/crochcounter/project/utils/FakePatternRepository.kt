@@ -1,4 +1,4 @@
-package be.mbolle.crochcounter.project
+package be.mbolle.crochcounter.project.utils
 
 import be.mbolle.crochcounter.core.model.PatternRepository
 import be.mbolle.crochcounter.patterns.data.Pattern

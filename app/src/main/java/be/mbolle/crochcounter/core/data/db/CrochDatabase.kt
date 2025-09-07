@@ -4,13 +4,17 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import be.mbolle.crochcounter.projects.data.CrochDao
-import be.mbolle.crochcounter.projects.data.CrochProject
+import be.mbolle.crochcounter.patterns.data.Pattern
+import be.mbolle.crochcounter.patterns.data.PatternDao
+import be.mbolle.crochcounter.projects.data.ProjectDao
+import be.mbolle.crochcounter.projects.data.Project
 
-@Database(entities = [CrochProject::class], version = 1)
+@Database(entities = [Project::class, Pattern::class, PatternProjectDetails::class], version = 1)
 abstract class CrochDatabase : RoomDatabase() {
     // TO BE IMPLEMENTED
-    abstract fun crochDao(): CrochDao
+    abstract fun crochDao(): ProjectDao
+    abstract fun projectWithPatternDao(): ProjectWithPatternDao
+    abstract fun patternDao(): PatternDao
 
     companion object {
         @Volatile

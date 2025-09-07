@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import be.mbolle.crochcounter.projects.data.CounterRepository
-import be.mbolle.crochcounter.projects.data.CounterRoomRepository
+import be.mbolle.crochcounter.projects.data.ProjectRoomRepository
 import be.mbolle.crochcounter.core.data.db.CrochDatabase
+import be.mbolle.crochcounter.core.model.ProjectRepository
 
 class CrochCounterViewModelFactory(private val context: Context): ViewModelProvider.Factory {
 
@@ -24,10 +24,10 @@ class CrochCounterViewModelFactory(private val context: Context): ViewModelProvi
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val database = CrochDatabase.getDatabase(context)
-        val repository = CounterRoomRepository(database.crochDao())
+        val repository = ProjectRoomRepository(database.crochDao())
 
         return modelClass.getConstructor(
-            CounterRepository::class.java
+            ProjectRepository::class.java
         ).newInstance(repository)
     }
 }

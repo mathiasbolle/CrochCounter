@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 
 @Dao
-interface CrochDao {
+interface ProjectDao {
     @Query("UPDATE projects SET is_active = :active WHERE name = :name")
     suspend fun editActiveProject(active: Boolean, name: String)
 
@@ -18,6 +18,9 @@ interface CrochDao {
     @Query("SELECT * FROM projects WHERE name = :project")
     suspend fun getProject(project: String): Project
 
+    @Query("SELECT * FROM projects where projectId = :id")
+    suspend fun getProjectById(id: Int): Project?
+
     @Query("DELETE FROM projects WHERE name = :name")
     suspend fun deleteProject(name: String)
 
@@ -28,5 +31,5 @@ interface CrochDao {
     suspend fun editProjectName(oldName: String, newName: String)
 
     @Insert
-    suspend fun createProject(project: Project)
+    suspend fun createProject(project: Project): Long
 }

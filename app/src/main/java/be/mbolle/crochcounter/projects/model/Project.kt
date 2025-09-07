@@ -1,4 +1,6 @@
 package be.mbolle.crochcounter.projects.model
 
-class Project {
-}
+data class Project(
+    val name: String,
+    val counter: Int,
+)

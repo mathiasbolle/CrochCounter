@@ -6,11 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import be.mbolle.crochcounter.projects.data.CounterRepository
-import be.mbolle.crochcounter.projects.model.CrochCounter
+import be.mbolle.crochcounter.core.model.ProjectRepository
+import be.mbolle.crochcounter.projects.model.use_cases.CreateProjectUseCase
 import kotlinx.coroutines.launch
 
-class CrochCounterViewModel(val counterRepository: CounterRepository) : ViewModel() {
+class CrochCounterViewModel(val counterRepository: ProjectRepository, val createProjectUseCase: CreateProjectUseCase) : ViewModel() {
 
     var crochCounterState by mutableStateOf(CrochCounterState())
         private set
@@ -26,10 +26,9 @@ class CrochCounterViewModel(val counterRepository: CounterRepository) : ViewMode
         refreshCache()
     }
 
-
     fun addProject(project: String) {
         viewModelScope.launch {
-            counterRepository.createProject(project)
+            createProjectUseCase(1) // fixed
 
             if (crochCounterState.name != null) {
                 switchProject(oldProject = crochCounterState.name!!, project)
@@ -89,13 +88,7 @@ class CrochCounterViewModel(val counterRepository: CounterRepository) : ViewMode
                 crochCounterState = CrochCounterState(
                     name = counterRepository.getActiveProject().name,
                     counter = counterRepository.getActiveProject().value,
-                    list = counterRepository.getAllProjects().map { projects ->
-                        CrochCounter(
-                            name = projects?.name,
-                            counter = projects?.value ?: 0,
-                            id = projects?.id ?: 0
-                        )
-                    }
+                    list = emptyList()
                 )
             } else {
                 crochCounterState = CrochCounterState()

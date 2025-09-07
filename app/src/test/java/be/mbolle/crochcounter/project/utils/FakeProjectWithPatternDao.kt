@@ -1,10 +1,9 @@
-package be.mbolle.crochcounter.project
+package be.mbolle.crochcounter.project.utils
 
 import be.mbolle.crochcounter.core.data.db.PatternProjectDetails
 import be.mbolle.crochcounter.core.data.db.ProjectWithPatternDao
 import be.mbolle.crochcounter.core.data.db.ProjectWithPatterns
 import be.mbolle.crochcounter.patterns.data.Pattern
-import be.mbolle.crochcounter.projects.data.Project
 
 class FakeProjectWithPatternDao : ProjectWithPatternDao {
     private val relationships = mutableListOf<PatternProjectDetails>()

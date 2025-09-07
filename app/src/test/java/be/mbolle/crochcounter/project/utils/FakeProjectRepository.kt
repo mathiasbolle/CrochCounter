@@ -1,4 +1,4 @@
-package be.mbolle.crochcounter.project
+package be.mbolle.crochcounter.project.utils
 
 import be.mbolle.crochcounter.core.model.ProjectRepository
 import be.mbolle.crochcounter.projects.data.toModel
