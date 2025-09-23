@@ -6,6 +6,7 @@ import be.mbolle.crochcounter.core.model.PatternRepository
 import be.mbolle.crochcounter.core.model.ProjectRepository
 import be.mbolle.crochcounter.patterns.data.Pattern
 import be.mbolle.crochcounter.projects.data.Project
+import be.mbolle.crochcounter.projects.data.toModel
 
 /**
  * Prerequisites:
@@ -19,7 +20,7 @@ class CreateProjectUseCase(
     private val projectWithPatternDao: ProjectWithPatternDao
 ) {
 
-    suspend operator fun invoke(patternId: Int): Result<Unit> {
+    suspend operator fun invoke(patternId: Int): Result<be.mbolle.crochcounter.projects.model.Project> {
         return try {
             val getBasePattern = validateExistingPattern(patternId)
             val getCreatedProject = singleProjectCreation(getBasePattern)
@@ -29,7 +30,7 @@ class CreateProjectUseCase(
                 project = getCreatedProject
             )
 
-            Result.success(Unit)
+            Result.success(getCreatedProject.toModel())
         } catch (e: Exception) {
             Result.failure(e)
         }

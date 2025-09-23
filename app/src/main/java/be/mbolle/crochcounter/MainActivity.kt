@@ -14,6 +14,7 @@ import be.mbolle.crochcounter.ui.CrochCounterApp
 import be.mbolle.crochcounter.ui.CrochCounterViewModelFactory
 import be.mbolle.crochcounter.ui.theme.CrochCounterTheme
 import be.mbolle.crochcounter.ui.CrochCounterViewModel
+import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
 
@@ -23,11 +24,12 @@ class MainActivity : ComponentActivity() {
             CrochCounterViewModelFactory.getInstance(this)
         )[CrochCounterViewModel::class.java]
     }
-    private var serviceIntent: Intent? = null
+    //private var serviceIntent: Intent? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.plant(Timber.DebugTree())
 
         if (!Settings.canDrawOverlays(this)) {
             startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION))
@@ -45,14 +47,14 @@ class MainActivity : ComponentActivity() {
 
     override fun onPause() {
         super.onPause()
-
-        if (Settings.canDrawOverlays(this) && crochCounterViewModel.isOverlayEnabled) {
-            Log.d("MainActivity", "pause activity!")
-            serviceIntent = Intent(this, CrochetService::class.java)
-            serviceIntent?.action = Actions.START.toString()
-
-            startService(serviceIntent)
-        }
+//
+//        if (Settings.canDrawOverlays(this) && crochCounterViewModel.isOverlayEnabled) {
+//            Log.d("MainActivity", "pause activity!")
+//            serviceIntent = Intent(this, CrochetService::class.java)
+//            serviceIntent?.action = Actions.START.toString()
+//
+//            startService(serviceIntent)
+//        }
     }
 
     override fun onResume() {
@@ -63,8 +65,8 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        serviceIntent = Intent(this, CrochetService::class.java)
-        serviceIntent?.action = Actions.STOP.toString()
-        startService(serviceIntent)
+//        serviceIntent = Intent(this, CrochetService::class.java)
+//        serviceIntent?.action = Actions.STOP.toString()
+//        startService(serviceIntent)
     }
 }

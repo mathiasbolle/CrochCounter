@@ -1,6 +1,9 @@
 package be.mbolle.crochcounter.projects.data
 
+import android.util.Log
 import be.mbolle.crochcounter.core.model.ProjectRepository
+import kotlinx.coroutines.flow.Flow
+import timber.log.Timber
 
 fun Project.toModel(): be.mbolle.crochcounter.projects.model.Project {
     return be.mbolle.crochcounter.projects.model.Project(
@@ -33,7 +36,7 @@ class ProjectRoomRepository(private val projectDao: ProjectDao) : ProjectReposit
         projectDao.editActiveProject(true, project)
     }
 
-    override suspend fun getActiveProject(): Project {
+    override suspend fun getActiveProject(): Flow<Project?> {
         return projectDao.getActiveProject()
     }
 

@@ -3,6 +3,7 @@ package be.mbolle.crochcounter.projects.data
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ProjectDao {
@@ -13,7 +14,7 @@ interface ProjectDao {
     suspend fun getAllProjects(): List<Project>
 
     @Query("SELECT * FROM projects WHERE is_active = 1 LIMIT 1")
-    suspend fun getActiveProject(): Project
+    fun getActiveProject(): Flow<Project?>
 
     @Query("SELECT * FROM projects WHERE name = :project")
     suspend fun getProject(project: String): Project

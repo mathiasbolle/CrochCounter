@@ -20,7 +20,7 @@ class CreateProjectUseCaseProjectNameTest : CreateProjectUseCaseCore() {
         val expectedProjectName = "Cow 1"
         assertEquals(
             expectedProjectName,
-            projectRepository.getAllProjects().single().name
+            projectRepository.getAllProjects()?.single()?.name
         )
     }
 }

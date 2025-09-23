@@ -1,5 +1,6 @@
 package be.mbolle.crochcounter.project.use_case.creation
 
+import be.mbolle.crochcounter.projects.data.Project
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -46,7 +47,7 @@ class CreateProjectUseCasePatternIdsTest(
         patternRepository.createPattern("Cow") // implicit
         patternRepository.createPattern("Bee 🐝") // implicit
 
-        val result: Result<Unit> = useCase(
+        val result: Result<be.mbolle.crochcounter.projects.model.Project> = useCase(
             patternId = patternId
         )
 

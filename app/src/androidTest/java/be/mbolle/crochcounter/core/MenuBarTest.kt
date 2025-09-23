@@ -31,7 +31,7 @@ class MenuBarTest {
                     LocalContext.current
                 )
             )
-            CrochCounterApp(crochCounterViewModel = crochCounterViewModel)
+            CrochCounterApp() // Todo LOOK INTO THIS!!
         }
 
         rule.onNodeWithContentDescription("show projects").performClick()

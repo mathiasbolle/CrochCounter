@@ -21,7 +21,6 @@ import be.mbolle.crochcounter.ui.CrochCounterViewModel
 @Composable
 fun ScreenWithTopBar(modifier: Modifier = Modifier,
                      crochCounterViewModel: CrochCounterViewModel,
-
                      navigateToProject: () -> Unit,
                      screen: @Composable () -> Unit) {
     Scaffold(
@@ -36,10 +35,9 @@ fun ScreenWithTopBar(modifier: Modifier = Modifier,
             TopCrochBar(
                 navigateToProjects = {
                     navigateToProject()
-
                 },
-                currentProject = crochCounterViewModel.crochCounterState.name ?: "",
-                projects = crochCounterViewModel.crochCounterState.list,
+                currentProject = "",
+                projects = emptyList(),
                 enableServiceValue = crochCounterViewModel.isOverlayEnabled,
                 switchProject = { oldProject, newProject ->
                     crochCounterViewModel.switchProject(
@@ -48,10 +46,10 @@ fun ScreenWithTopBar(modifier: Modifier = Modifier,
                     )
                 },
                 onCheckboxValueChange = { crochCounterViewModel.enableOverlayService(!crochCounterViewModel.isOverlayEnabled) },
-                makeProjectVisible = { crochCounterViewModel.makeCreateProjectDialogVisible() },
+                makeProjectVisible = { },
                 decreaseValue = { crochCounterViewModel.subtractCounterByOne() },
                 resetValue = { crochCounterViewModel.resetCounter() },
-                editProjectName = { crochCounterViewModel.makeEditProjectDialogVisible() },
+                editProjectName = {  },
                 deleteCurrentProject = { crochCounterViewModel.removeProject() }
             )
         }
@@ -61,7 +59,7 @@ fun ScreenWithTopBar(modifier: Modifier = Modifier,
 
         LaunchedEffect(lifecycleState) {
             if (lifecycleState == Lifecycle.State.RESUMED) {
-                crochCounterViewModel.refreshCache()
+                //crochCounterViewModel.refreshCache()
             }
         }
 

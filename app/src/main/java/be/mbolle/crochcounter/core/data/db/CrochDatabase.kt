@@ -24,8 +24,15 @@ abstract class CrochDatabase : RoomDatabase() {
             val instance = Room.databaseBuilder(
                 context,
                 CrochDatabase::class.java,
-                "croch_db"
-            ).build()
+                "croch_db.db"
+            )
+                .createFromAsset("database/project_db.db")
+                .build()
+
+            /*
+            @Language("RoomSql") val cursor = instance.query("PRAGMA wal_checkpoint", arrayOf())
+            cursor.moveToFirst()
+             */
             INSTANCE = instance
             instance
         }

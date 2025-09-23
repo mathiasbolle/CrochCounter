@@ -116,12 +116,11 @@ class CrochetService() : Service(), ViewModelStoreOwner {
         composeView?.setContent {
             OverlayDraggableContainer {
                 PopupWindow(
-                    counter = crochCounterViewModel.crochCounterState.counter,
+                    counter = 0,
                     addValue = { crochCounterViewModel.addCounterByOne() },
-                    project = crochCounterViewModel.crochCounterState.name.toString()
+                    project = ""
                 )
             }
-
         }
 
         val lifecycleOwner = MyLifecycleOwner()
