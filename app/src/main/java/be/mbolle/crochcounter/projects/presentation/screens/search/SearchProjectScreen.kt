@@ -21,19 +21,30 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import be.mbolle.crochcounter.R
 import be.mbolle.crochcounter.core.presentation.composables.SearchCrochCounter
 import be.mbolle.crochcounter.ui.theme.CrochCounterTheme
 
 @Composable
-fun SearchProjectScreen(modifier: Modifier = Modifier, paddingValues: PaddingValues) {
-    val searchProjectViewModel = viewModel<SearchProjectViewModel>()
+fun SearchProjectScreen(
+    modifier: Modifier = Modifier,
+    paddingValues: PaddingValues
+) {
+
+    val searchProjectViewModel = viewModel<SearchProjectViewModel>(
+        factory = SearchProjectViewModelFactory(
+            LocalContext.current
+        )
+    )
     val projectItems = searchProjectViewModel.projectItems.collectAsState()
 
     LaunchedEffect(searchProjectViewModel.searchProjectName) {

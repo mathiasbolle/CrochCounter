@@ -4,23 +4,37 @@ import android.util.Log
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import be.mbolle.crochcounter.core.model.ProjectRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
-class SearchProjectViewModel : ViewModel() {
-    val data = listOf("test1", "test2")
-    var projectItems:
-            MutableStateFlow<List<String>> =
-        MutableStateFlow(data) // get all the projects that are stored in the db
+class SearchProjectViewModel(
+    private val projectRepository: ProjectRepository
+) : ViewModel() {
+    var projectItems: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
         private set
 
-    var filteredItems: MutableStateFlow<List<String>> = projectItems
+    var filteredItems: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
+        private set
 
     var searchProjectName: TextFieldState = TextFieldState()
         private set
 
     init {
         // initial projectItems from data storage.
+        init()
+    }
+
+    private fun init() {
+        viewModelScope.launch {
+            val projects = projectRepository.getAllProjects()
+            Timber.log(Log.WARN, projects.toString())
+            projectItems.value = projects.map { it.name }
+            filteredItems = projectItems
+        }
     }
 
     suspend fun run() {
@@ -32,6 +46,7 @@ class SearchProjectViewModel : ViewModel() {
     }
 
     private fun filterProjects(projectName: String) {
-        filteredItems.value = data.filter { it.contains(projectName, ignoreCase = true) }
+        filteredItems.value =
+            projectItems.value.filter { it.contains(projectName, ignoreCase = true) }
     }
 }
