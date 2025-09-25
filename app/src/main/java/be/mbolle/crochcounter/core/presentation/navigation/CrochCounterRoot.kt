@@ -15,6 +15,8 @@ import be.mbolle.crochcounter.ui.CrochCounterViewModel
 import be.mbolle.crochcounter.ui.CrochCounterViewModelFactory
 import be.mbolle.crochcounter.core.presentation.util.ScreenWithTopBar
 import be.mbolle.crochcounter.projects.presentation.screens.search.SearchProjectScreen
+import be.mbolle.crochcounter.projects.presentation.screens.search.SearchProjectViewModel
+import be.mbolle.crochcounter.projects.presentation.screens.search.SearchProjectViewModelFactory
 import kotlinx.serialization.Serializable
 
 
@@ -30,7 +32,11 @@ fun CrochCounterRoot(
 ) {
     val navControl = rememberNavController()
 
-    NavHost(navController = navControl, startDestination = ProjectScreenNav, modifier = modifier) {
+    NavHost(
+        navController = navControl,
+        startDestination = ProjectScreenNav, // lastest project plz
+        modifier = modifier
+    ) {
         composable<ProjectScreenNav> {
             val crochCounterViewModel: CrochCounterViewModel = viewModel(
                 factory = CrochCounterViewModelFactory(
@@ -60,13 +66,25 @@ fun CrochCounterRoot(
                     LocalContext.current
                 )
             )
+
+            val searchProjectViewModel = viewModel<SearchProjectViewModel>(
+                factory = SearchProjectViewModelFactory(
+                    LocalContext.current
+                )
+            )
             ScreenWithTopBar(
                 crochCounterViewModel = crochCounterViewModel,
                 navigateToProject = {
                     navControl.navigate(ProjectSearchScreen)
                 }
             ) {
-                SearchProjectScreen(paddingValues = PaddingValues())
+                SearchProjectScreen(
+                    paddingValues = PaddingValues(),
+                    searchProjectViewModel = searchProjectViewModel,
+                ) { projectItem ->
+                    crochCounterViewModel.makeProjectVisible(projectItem)
+                    navControl.navigate(ProjectScreenNav)
+                }
             }
         }
     }

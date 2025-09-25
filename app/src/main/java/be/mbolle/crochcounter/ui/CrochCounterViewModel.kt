@@ -4,9 +4,12 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import be.mbolle.crochcounter.core.model.ProjectRepository
+import be.mbolle.crochcounter.core.presentation.navigation.ProjectScreenNav
 import be.mbolle.crochcounter.projects.model.use_cases.CreateProjectUseCase
 import be.mbolle.crochcounter.projects.model.use_cases.GetActiveProjectUseCase
 import kotlinx.coroutines.flow.catch
@@ -16,7 +19,7 @@ import timber.log.Timber
 
 class CrochCounterViewModel(
     private val projectRepository: ProjectRepository,
-    private val getActiveProjectUseCase: GetActiveProjectUseCase
+    private val getActiveProjectUseCase: GetActiveProjectUseCase,
 ) : ViewModel() {
 
     // this probably breaks the single responsiblity principle:
@@ -109,6 +112,14 @@ class CrochCounterViewModel(
             }
             //refresh state
             //refreshCache()
+        }
+    }
+
+    fun makeProjectVisible(name: String) {
+        val succes = (crochCounterState as CrochCounterProjectState.Succes)
+        viewModelScope.launch {
+            projectRepository.setProjectInactive(succes.projectTitle)
+            projectRepository.setProjectActive(name)
         }
     }
 

@@ -2,6 +2,7 @@ package be.mbolle.crochcounter.projects.presentation.screens.search
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,14 +22,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import be.mbolle.crochcounter.R
 import be.mbolle.crochcounter.core.presentation.composables.SearchCrochCounter
@@ -37,14 +36,11 @@ import be.mbolle.crochcounter.ui.theme.CrochCounterTheme
 @Composable
 fun SearchProjectScreen(
     modifier: Modifier = Modifier,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    searchProjectViewModel: SearchProjectViewModel,
+    navigateToMainMenu: (projectItem: String) -> Unit,
 ) {
 
-    val searchProjectViewModel = viewModel<SearchProjectViewModel>(
-        factory = SearchProjectViewModelFactory(
-            LocalContext.current
-        )
-    )
     val projectItems = searchProjectViewModel.projectItems.collectAsState()
 
     LaunchedEffect(searchProjectViewModel.searchProjectName) {
@@ -70,7 +66,9 @@ fun SearchProjectScreen(
             modifier = modifier,
             paddingValues = PaddingValues(horizontal = 5.dp),
             projects = projectItems.value
-        )
+        ) { projectItem ->
+            navigateToMainMenu(projectItem)
+        }
     }
 }
 
@@ -78,11 +76,14 @@ fun SearchProjectScreen(
 fun SearchableProjectList(
     projects: List<String>,
     modifier: Modifier = Modifier,
-    paddingValues: PaddingValues = PaddingValues()
+    paddingValues: PaddingValues = PaddingValues(),
+    onClick: (projectItem: String) -> Unit,
 ) {
     LazyColumn(modifier = modifier, contentPadding = paddingValues) {
         items(projects) { projectItem ->
-            SearchableProject(projectItem)
+            SearchableProject(projectItem) {
+                onClick(projectItem)
+            }
         }
     }
 }
@@ -90,7 +91,8 @@ fun SearchableProjectList(
 @Composable
 fun SearchableProject(
     projectName: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -98,6 +100,7 @@ fun SearchableProject(
             .padding(5.dp)
             .background(Color(0XFFffd6e0))
             .fillMaxWidth()
+            .clickable { onClick() }
     ) {
         Row {
             Image(
@@ -125,9 +128,18 @@ fun SearchableProject(
 @Preview(showBackground = true)
 @Composable
 fun SearchProjectScreenPreview() {
-    SearchProjectScreen(paddingValues = PaddingValues())
+    val searchProjectViewModel = viewModel<SearchProjectViewModel>(
+        factory = SearchProjectViewModelFactory(
+            LocalContext.current
+        )
+    )
 
-
+    SearchProjectScreen(
+        paddingValues = PaddingValues(),
+        searchProjectViewModel = searchProjectViewModel
+    ) {
+        /** no navigation in this preview. */
+    }
 }
 
 @Preview(showBackground = true)
@@ -138,8 +150,8 @@ fun SearchableProjectPreview() {
     CrochCounterTheme {
         SearchableProjectList(
             projects = projects
-        )
+        ) {
+            // TODO emulate an active project
+        }
     }
-
-
 }
