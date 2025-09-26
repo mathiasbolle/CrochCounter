@@ -15,11 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import be.mbolle.crochcounter.projects.presentation.composables.TopCrochBar
+import be.mbolle.crochcounter.core.presentation.composables.TopCrochBar
 import be.mbolle.crochcounter.ui.CrochCounterViewModel
 
 @Composable
 fun ScreenWithTopBar(modifier: Modifier = Modifier,
+                     enableActions: Boolean,
                      crochCounterViewModel: CrochCounterViewModel,
                      navigateToProject: () -> Unit,
                      screen: @Composable () -> Unit) {
@@ -36,21 +37,11 @@ fun ScreenWithTopBar(modifier: Modifier = Modifier,
                 navigateToProjects = {
                     navigateToProject()
                 },
-                currentProject = "",
-                projects = emptyList(),
                 enableServiceValue = crochCounterViewModel.isOverlayEnabled,
-                switchProject = { oldProject, newProject ->
-                    crochCounterViewModel.switchProject(
-                        oldProject,
-                        newProject
-                    )
-                },
                 onCheckboxValueChange = { crochCounterViewModel.enableOverlayService(!crochCounterViewModel.isOverlayEnabled) },
-                makeProjectVisible = { },
                 decreaseValue = { crochCounterViewModel.subtractCounterByOne() },
                 resetValue = { crochCounterViewModel.resetCounter() },
-                editProjectName = {  },
-                deleteCurrentProject = { crochCounterViewModel.removeProject() }
+                isProjectEnabled = enableActions
             )
         }
     ) { innerPadding ->

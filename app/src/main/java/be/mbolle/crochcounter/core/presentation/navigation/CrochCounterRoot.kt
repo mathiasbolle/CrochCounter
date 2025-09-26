@@ -44,6 +44,7 @@ fun CrochCounterRoot(
                 )
             )
             ScreenWithTopBar(
+                enableActions = true,
                 crochCounterViewModel = crochCounterViewModel,
                 navigateToProject = {
                     navControl.navigate(ProjectSearchScreen)
@@ -73,6 +74,7 @@ fun CrochCounterRoot(
                 )
             )
             ScreenWithTopBar(
+                enableActions = false,
                 crochCounterViewModel = crochCounterViewModel,
                 navigateToProject = {
                     navControl.navigate(ProjectSearchScreen)

@@ -1,7 +1,10 @@
 package be.mbolle.crochcounter.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import be.mbolle.crochcounter.core.presentation.navigation.CrochCounterRoot
 
 
@@ -11,6 +14,8 @@ fun CrochCounterApp(
 ) {
     CrochCounterRoot(
         modifier = modifier
+            .fillMaxSize()
+            .background(color = Color(0XFFFFD6E0))
     )
     /*
     Scaffold(

@@ -1,4 +1,4 @@
-package be.mbolle.crochcounter.projects.presentation.composables
+package be.mbolle.crochcounter.core.presentation.composables
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Checkbox
@@ -11,28 +11,24 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import be.mbolle.crochcounter.R
-import be.mbolle.crochcounter.projects.model.CrochCounter
 import be.mbolle.crochcounter.projects.presentation.composables.base.ProjectDropdownMenu
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopCrochBar(
-    currentProject: String,
-    projects: List<CrochCounter>,
+    isProjectEnabled: Boolean = true,
     enableServiceValue: Boolean,
-    switchProject: (oldProject: String, newProject: String) -> Unit,
     onCheckboxValueChange: (Boolean) -> Unit,
-    makeProjectVisible: () -> Unit,
     decreaseValue: () -> Unit,
     resetValue: () -> Unit,
-    editProjectName: () -> Unit,
-    deleteCurrentProject: () -> Unit,
-
     navigateToProjects: () -> Unit
 ) {
     TopAppBar(
@@ -42,7 +38,7 @@ fun TopCrochBar(
         ),
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                ProjectDropdownMenu (
+                ProjectDropdownMenu(
 //                    projects = projects,
 //                    makeProjectVisible = { makeProjectVisible() },
 //                    activeProject = currentProject,
@@ -61,6 +57,8 @@ fun TopCrochBar(
         },
 
         actions = {
+            if (!isProjectEnabled) return@TopAppBar
+
             IconButton(
                 onClick = { decreaseValue() },
                 colors = IconButtonDefaults.iconButtonColors(contentColor = Color(0XFFFF8CA7))
