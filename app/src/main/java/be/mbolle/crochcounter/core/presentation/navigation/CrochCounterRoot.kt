@@ -7,8 +7,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import be.mbolle.crochcounter.projects.presentation.screens.project.ProjectScreen
 import be.mbolle.crochcounter.ui.CrochCounterViewModel
@@ -19,12 +22,25 @@ import be.mbolle.crochcounter.projects.presentation.screens.search.SearchProject
 import be.mbolle.crochcounter.projects.presentation.screens.search.SearchProjectViewModelFactory
 import kotlinx.serialization.Serializable
 
+@Serializable
+object ProjectScreens {
+    @Serializable
+    object ProjectScreenNav
+
+    @Serializable
+    object ProjectSearchScreen
+
+}
 
 @Serializable
-object ProjectScreenNav
+object PatternScreens {
 
-@Serializable
-object ProjectSearchScreen
+    @Serializable
+    object PatternMainScreen
+
+    @Serializable
+    object PatternSearchScreen
+}
 
 @Composable
 fun CrochCounterRoot(
@@ -34,10 +50,30 @@ fun CrochCounterRoot(
 
     NavHost(
         navController = navControl,
-        startDestination = ProjectScreenNav, // lastest project plz
+        startDestination = ProjectScreens,
         modifier = modifier
     ) {
-        composable<ProjectScreenNav> {
+        projectNavGraph(navControl)
+        patternNavGraph(navControl)
+    }
+}
+
+fun NavGraphBuilder.patternNavGraph(navControl: NavHostController) {
+    navigation<PatternScreens>(
+        startDestination = PatternScreens.PatternMainScreen,
+    ) {
+        composable<PatternScreens.PatternMainScreen> {
+
+
+        }
+    }
+}
+
+fun NavGraphBuilder.projectNavGraph(navController: NavHostController) {
+    navigation<ProjectScreens>(
+        startDestination = ProjectScreens.ProjectScreenNav,
+    ) {
+        composable<ProjectScreens.ProjectScreenNav> {
             val crochCounterViewModel: CrochCounterViewModel = viewModel(
                 factory = CrochCounterViewModelFactory(
                     LocalContext.current
@@ -47,14 +83,14 @@ fun CrochCounterRoot(
                 enableActions = true,
                 crochCounterViewModel = crochCounterViewModel,
                 navigateToProject = {
-                    navControl.navigate(ProjectSearchScreen)
+                    navController.navigate(ProjectScreens.ProjectSearchScreen)
                 }
             ) {
                 ProjectScreen(crochCounterViewModel = crochCounterViewModel)
             }
-
         }
-        composable<ProjectSearchScreen>(
+
+        composable<ProjectScreens.ProjectSearchScreen>(
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Down,
@@ -77,7 +113,7 @@ fun CrochCounterRoot(
                 enableActions = false,
                 crochCounterViewModel = crochCounterViewModel,
                 navigateToProject = {
-                    navControl.navigate(ProjectSearchScreen)
+                    navController.navigate(ProjectScreens.ProjectSearchScreen)
                 }
             ) {
                 SearchProjectScreen(
@@ -85,7 +121,7 @@ fun CrochCounterRoot(
                     searchProjectViewModel = searchProjectViewModel,
                 ) { projectItem ->
                     crochCounterViewModel.makeProjectVisible(projectItem)
-                    navControl.navigate(ProjectScreenNav)
+                    navController.navigate(ProjectScreens.ProjectScreenNav)
                 }
             }
         }
