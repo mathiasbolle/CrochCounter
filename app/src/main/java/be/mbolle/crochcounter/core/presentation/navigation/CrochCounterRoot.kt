@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import be.mbolle.crochcounter.MainApplication
 import be.mbolle.crochcounter.core.presentation.screens.search.PatternViewModelFactory
 import be.mbolle.crochcounter.core.presentation.screens.search.ProjectSearchableViewModel
 import be.mbolle.crochcounter.core.presentation.screens.search.ProjectViewModelFactory
@@ -105,7 +106,7 @@ fun NavGraphBuilder.patternNavGraph(navControl: NavHostController) {
             }
         }
         composable<PatternScreens.PatternMainScreen> {
-            val patternMainViewModel = viewModel<PatternMainViewModel>()
+            val patternMainViewModel: PatternMainViewModel = viewModel(factory = MainApplication.container.crochetFactory)
 
             val crochCounterViewModel: CrochCounterViewModel = viewModel(
                 factory = CrochCounterViewModelFactory(

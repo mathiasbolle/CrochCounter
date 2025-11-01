@@ -37,8 +37,10 @@ import be.mbolle.crochcounter.projects.presentation.composables.sourceSansProFon
 import be.mbolle.crochcounter.ui.theme.CrochCounterTheme
 
 @Composable
-fun PatternMainScreen(modifier: Modifier = Modifier,
-                      patternMainViewModel: PatternMainViewModel) {
+fun PatternMainScreen(
+    modifier: Modifier = Modifier,
+    patternMainViewModel: PatternMainViewModel
+) {
     val patternState = patternMainViewModel.pattern.value
     val patternItemState = patternMainViewModel.patternItemSections.value
 
@@ -47,7 +49,9 @@ fun PatternMainScreen(modifier: Modifier = Modifier,
             .fillMaxHeight()
             .background(Color(0XFFfee2e9))
     ) {
-        PatternHeader(pattern = patternState)
+        if (patternState != null) {
+            PatternHeader(pattern = patternState)
+        }
         PatternItemList(patternItemSections = patternItemState)
     }
 }
@@ -162,7 +166,8 @@ fun PatternItem(patternItemSections: PatternItemSection, modifier: Modifier = Mo
             .background(Color(0XFFfbc8d8))
             .padding(start = 20.dp, top = 10.dp, bottom = 10.dp)
     ) {
-        Text(title.content,
+        Text(
+            title.content,
             color = Color(0XFFfe6689),
             fontFamily = sourceSansProFont,
             fontWeight = FontWeight.Bold,
@@ -179,7 +184,8 @@ fun PatternItem(patternItemSections: PatternItemSection, modifier: Modifier = Mo
 
                     }
                 }
-            Text("$number ${subtitle.content}",
+            Text(
+                "$number ${subtitle.content}",
 
                 color = Color(0XFFfe6689),
                 fontFamily = sourceSansProFont,
@@ -187,7 +193,7 @@ fun PatternItem(patternItemSections: PatternItemSection, modifier: Modifier = Mo
                 lineHeight = 1.sp
 
 
-                )
+            )
         }
     }
 }
