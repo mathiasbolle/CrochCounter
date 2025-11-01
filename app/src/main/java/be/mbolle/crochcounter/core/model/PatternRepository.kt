@@ -1,9 +1,14 @@
 package be.mbolle.crochcounter.core.model
 
-import be.mbolle.crochcounter.patterns.data.Pattern
+import be.mbolle.crochcounter.patterns.screens.model.Pattern
 
-interface PatternRepository {
+
+interface PatternRepository{
     suspend fun getPattern(id: Int): Pattern?
-    suspend fun createPattern(name: String): Pattern?
+
+    suspend fun getPatternByName(name: String): Pattern?
+    suspend fun createPattern(name: String)
     suspend fun deletePattern(name: String)
+
+    suspend fun getAllPatterns(): List<Pattern>
 }

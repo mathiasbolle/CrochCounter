@@ -23,8 +23,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import be.mbolle.crochcounter.R
+import be.mbolle.crochcounter.patterns.data.PatternRoomRepository
 import be.mbolle.crochcounter.patterns.screens.model.Pattern
 import be.mbolle.crochcounter.patterns.screens.model.PatternItem
 import be.mbolle.crochcounter.patterns.screens.model.PatternItemSection
@@ -33,8 +37,8 @@ import be.mbolle.crochcounter.projects.presentation.composables.sourceSansProFon
 import be.mbolle.crochcounter.ui.theme.CrochCounterTheme
 
 @Composable
-fun PatternMainScreen(modifier: Modifier = Modifier) {
-    val patternMainViewModel = viewModel<PatternMainViewModel>()
+fun PatternMainScreen(modifier: Modifier = Modifier,
+                      patternMainViewModel: PatternMainViewModel) {
     val patternState = patternMainViewModel.pattern.value
     val patternItemState = patternMainViewModel.patternItemSections.value
 
@@ -105,7 +109,7 @@ fun PatternHeader(
                     .padding(start = 20.dp)
             ) {
                 Text(
-                    "Bee",
+                    pattern.name,
                     color = Color(0XFFfe6689),
                     fontFamily = sourceSansProFont,
                     fontWeight = FontWeight.Bold,
@@ -248,7 +252,8 @@ fun PatternItemPreview() {
 @Composable
 fun PatternMainScreenPreview() {
     CrochCounterTheme {
-        PatternMainScreen()
+        val patternMainViewModel = viewModel<PatternMainViewModel>()
+        PatternMainScreen(patternMainViewModel = patternMainViewModel)
     }
 }
 
@@ -256,6 +261,7 @@ fun PatternMainScreenPreview() {
 @Composable
 fun PatternHeaderPreview() {
     CrochCounterTheme {
-        PatternMainScreen()
+        val patternMainViewModel = viewModel<PatternMainViewModel>()
+        PatternMainScreen(patternMainViewModel = patternMainViewModel)
     }
 }

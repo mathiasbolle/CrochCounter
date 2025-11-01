@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import be.mbolle.crochcounter.core.data.db.CrochDatabase
 import be.mbolle.crochcounter.projects.data.ProjectRoomRepository
-import be.mbolle.crochcounter.ui.CrochCounterViewModelFactory
 
 class SearchProjectViewModelFactory(private val context: Context): ViewModelProvider.Factory {
     companion object {

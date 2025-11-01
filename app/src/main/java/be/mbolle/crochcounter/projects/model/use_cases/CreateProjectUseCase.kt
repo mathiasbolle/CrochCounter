@@ -45,7 +45,7 @@ class CreateProjectUseCase(
             )
         }
 
-        return basePattern
+        return Pattern(name = basePattern.name)
     }
 
     private suspend fun singleProjectCreation(

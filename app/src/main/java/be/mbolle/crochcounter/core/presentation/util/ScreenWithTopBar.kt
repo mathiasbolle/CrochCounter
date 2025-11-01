@@ -13,8 +13,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import be.mbolle.crochcounter.R
 import be.mbolle.crochcounter.core.presentation.composables.TopCrochBar
 import be.mbolle.crochcounter.ui.CrochCounterViewModel
 
@@ -23,6 +25,9 @@ fun ScreenWithTopBar(modifier: Modifier = Modifier,
                      enableActions: Boolean,
                      crochCounterViewModel: CrochCounterViewModel,
                      navigateToProject: () -> Unit,
+                     navigateToPatterns: () -> Unit,
+                     name: String = stringResource(R.string.project_title),
+
                      screen: @Composable () -> Unit) {
     Scaffold(
         modifier = modifier
@@ -34,6 +39,7 @@ fun ScreenWithTopBar(modifier: Modifier = Modifier,
         containerColor = Color(0XFFFEE2E9),
         topBar = {
             TopCrochBar(
+                name =name,
                 navigateToProjects = {
                     navigateToProject()
                 },
@@ -41,6 +47,7 @@ fun ScreenWithTopBar(modifier: Modifier = Modifier,
                 onCheckboxValueChange = { crochCounterViewModel.enableOverlayService(!crochCounterViewModel.isOverlayEnabled) },
                 decreaseValue = { crochCounterViewModel.subtractCounterByOne() },
                 resetValue = { crochCounterViewModel.resetCounter() },
+                navigateToPatterns = { navigateToPatterns() },
                 isProjectEnabled = enableActions
             )
         }

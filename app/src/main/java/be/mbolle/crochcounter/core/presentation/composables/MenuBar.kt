@@ -29,7 +29,9 @@ fun TopCrochBar(
     onCheckboxValueChange: (Boolean) -> Unit,
     decreaseValue: () -> Unit,
     resetValue: () -> Unit,
-    navigateToProjects: () -> Unit
+    navigateToProjects: () -> Unit,
+    navigateToPatterns: () -> Unit,
+    name: String = stringResource(R.string.project_title)
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -38,6 +40,11 @@ fun TopCrochBar(
         ),
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
+                if (!isProjectEnabled) {
+                    Text(name)
+                    return@TopAppBar
+                }
+
                 ProjectDropdownMenu(
 //                    projects = projects,
 //                    makeProjectVisible = { makeProjectVisible() },
@@ -52,7 +59,7 @@ fun TopCrochBar(
 //                    }
                     navigateToProjects = { navigateToProjects() }
                 )
-                Text(stringResource(R.string.project_title))
+                Text(name)
             }
         },
 
@@ -87,6 +94,16 @@ fun TopCrochBar(
                     uncheckedColor = Color(0XFFFF8CA7)
                 )
             )
+
+            IconButton(
+                onClick = { navigateToPatterns() },
+                colors = IconButtonDefaults.iconButtonColors(contentColor = Color(0XFFFF8CA7))
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.grid),
+                    contentDescription = "Go to crocher templates."
+                )
+            }
         }
     )
 }

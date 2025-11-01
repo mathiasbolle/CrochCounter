@@ -8,6 +8,7 @@ import be.mbolle.crochcounter.patterns.data.Pattern
 import be.mbolle.crochcounter.patterns.data.PatternDao
 import be.mbolle.crochcounter.projects.data.ProjectDao
 import be.mbolle.crochcounter.projects.data.Project
+import org.intellij.lang.annotations.Language
 
 @Database(entities = [Project::class, Pattern::class, PatternProjectDetails::class], version = 1)
 abstract class CrochDatabase : RoomDatabase() {
@@ -29,10 +30,8 @@ abstract class CrochDatabase : RoomDatabase() {
                 .createFromAsset("database/project_db.db")
                 .build()
 
-            /*
-            @Language("RoomSql") val cursor = instance.query("PRAGMA wal_checkpoint", arrayOf())
-            cursor.moveToFirst()
-             */
+
+
             INSTANCE = instance
             instance
         }

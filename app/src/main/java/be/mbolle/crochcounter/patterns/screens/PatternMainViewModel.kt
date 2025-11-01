@@ -2,13 +2,32 @@ package be.mbolle.crochcounter.patterns.screens
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
+import androidx.savedstate.SavedStateRegistryOwner
+import be.mbolle.crochcounter.core.model.PatternRepository
+import be.mbolle.crochcounter.core.model.ProjectRepository
+import be.mbolle.crochcounter.core.presentation.navigation.PatternScreens
 import be.mbolle.crochcounter.patterns.screens.model.Pattern
 import be.mbolle.crochcounter.patterns.screens.model.PatternItem
 import be.mbolle.crochcounter.patterns.screens.model.PatternItemSection
 import be.mbolle.crochcounter.patterns.screens.model.SubtitlePatternItem
+import kotlinx.coroutines.launch
 
-class PatternMainViewModel : ViewModel() {
+class PatternMainViewModel(
+
+//    private val patternRepository: PatternRepository,
+//    savedStateHandle: SavedStateHandle,
+) : ViewModel(
+
+) {
+
+    //private val patternParams = savedStateHandle.toRoute<PatternScreens.PatternMainScreen>()
+
     lateinit var pattern: MutableState<Pattern>
         private set
 
@@ -21,7 +40,12 @@ class PatternMainViewModel : ViewModel() {
     }
 
     private fun loadPattern() {
-        pattern = mutableStateOf(Pattern(name = "cool pattern(no data)", 2))
+        viewModelScope.launch {
+//            patternRepository.getPatternByName(patternParams.name)
+//                ?.let {
+//                    pattern = mutableStateOf(Pattern(it.name, it.projectCount))
+//                }
+        }
     }
 
     private fun loadPatternItemSection() {
@@ -72,7 +96,7 @@ class PatternMainViewModel : ViewModel() {
                     )
                 ),
 
-            )
+                )
         )
     }
 }

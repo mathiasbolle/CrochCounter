@@ -11,4 +11,12 @@ interface PatternDao {
 
     @Query("SELECT * FROM patterns WHERE patternId = :id")
     suspend fun getPatternById(id: Int): Pattern?
+
+
+    @Query("SELECT * FROM patterns")
+    suspend fun getAll(): List<Pattern>
+
+
+    @Query("SELECT * FROM patterns WHERE name = :name")
+    suspend fun getPatternByName(name: String): Pattern?
 }

@@ -56,8 +56,6 @@ class ProjectRoomRepository(private val projectDao: ProjectDao) : ProjectReposit
         return projectDao.editProject(0, project)
     }
 
-
-
     override suspend fun deleteProject(project: String) {
         projectDao.deleteProject(name = project)
     }
