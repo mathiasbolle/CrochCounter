@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "962ce3780c4de584a61d991ef4a86ada",
+    "identityHash": "38f4375c8819c85527fcd2abb698ab08",
     "entities": [
       {
         "tableName": "projects",
@@ -105,11 +105,51 @@
             "patternId"
           ]
         }
+      },
+      {
+        "tableName": "pattern_items",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`patternItemId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `content` TEXT NOT NULL, `comment` TEXT, `patternId` INTEGER NOT NULL, `patternItemRef` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "patternItemId",
+            "columnName": "patternItemId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "content",
+            "columnName": "content",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comment",
+            "columnName": "comment",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "patternId",
+            "columnName": "patternId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "patternItemRef",
+            "columnName": "patternItemRef",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "patternItemId"
+          ]
+        }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '962ce3780c4de584a61d991ef4a86ada')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '38f4375c8819c85527fcd2abb698ab08')"
     ]
   }
 }

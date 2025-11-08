@@ -6,7 +6,7 @@ import be.mbolle.crochcounter.patterns.screens.model.Pattern
 interface PatternRepository{
     suspend fun getPattern(id: Int): Pattern?
 
-    suspend fun getPatternByName(name: String): Pattern?
+    suspend fun getPatternByName(name: String): be.mbolle.crochcounter.patterns.data.Pattern?
     suspend fun createPattern(name: String)
     suspend fun deletePattern(name: String)
 

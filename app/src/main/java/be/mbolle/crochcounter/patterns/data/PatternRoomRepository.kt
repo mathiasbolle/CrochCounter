@@ -7,8 +7,8 @@ class PatternRoomRepository(private val patternDao: PatternDao) : PatternReposit
         return patternDao.getPatternById(id)?.toModel()
     }
 
-    override suspend fun getPatternByName(name: String): be.mbolle.crochcounter.patterns.screens.model.Pattern? {
-        return patternDao.getPatternByName(name)?.toModel()
+    override suspend fun getPatternByName(name: String): be.mbolle.crochcounter.patterns.data.Pattern? {
+        return patternDao.getPatternByName(name)
     }
 
     override suspend fun createPattern(name: String) {

@@ -24,6 +24,8 @@ class ProductionContainer(context: Context): Container {
             val savedStateHandle = createSavedStateHandle()
             PatternMainViewModel(
                 patternRepository = patternRepository,
+                patternWithPatternItemDao = crocherDatabase.patternWithPatternItemDao(),
+                patternItemDao = crocherDatabase.patternItemDao(),
                 savedStateHandle
             )
         }
