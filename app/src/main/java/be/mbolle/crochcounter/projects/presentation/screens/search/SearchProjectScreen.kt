@@ -53,7 +53,6 @@ fun SearchProjectScreen(
             .fillMaxSize()
             .padding(20.dp)
     ) {
-
         SearchCrochCounter(
             modifier = Modifier
                 .fillMaxWidth()
@@ -69,6 +68,7 @@ fun SearchProjectScreen(
         ) { projectItem ->
             navigateToMainMenu(projectItem)
         }
+
     }
 }
 

@@ -31,7 +31,7 @@ class ProjectSearchableViewModel(
     }
 }
 
-class PatternSearchableViewModel(
+open class PatternSearchableViewModel(
     private val patternRepository: PatternRepository
 ) : SearchableViewModel() {
 

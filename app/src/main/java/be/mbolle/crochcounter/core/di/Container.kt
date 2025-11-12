@@ -8,6 +8,9 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import be.mbolle.crochcounter.core.data.db.CrochDatabase
 import be.mbolle.crochcounter.patterns.data.PatternRoomRepository
 import be.mbolle.crochcounter.patterns.screens.PatternMainViewModel
+import be.mbolle.crochcounter.projects.data.ProjectRoomRepository
+import be.mbolle.crochcounter.projects.model.use_cases.CreateProjectUseCase
+import be.mbolle.crochcounter.projects.presentation.screens.create.CreateProjectScreenViewModel
 
 /**
  * DI container for production
@@ -15,9 +18,10 @@ import be.mbolle.crochcounter.patterns.screens.PatternMainViewModel
 
 
 interface Container
-class ProductionContainer(context: Context): Container {
+class ProductionContainer(context: Context) : Container {
     val crocherDatabase = CrochDatabase.getDatabase(context)
     val patternRepository = PatternRoomRepository(crocherDatabase.patternDao())
+    val projectRepository = ProjectRoomRepository(crocherDatabase.crochDao())
 
     val crochetFactory: ViewModelProvider.Factory = viewModelFactory {
         initializer {
@@ -27,6 +31,18 @@ class ProductionContainer(context: Context): Container {
                 patternWithPatternItemDao = crocherDatabase.patternWithPatternItemDao(),
                 patternItemDao = crocherDatabase.patternItemDao(),
                 savedStateHandle
+            )
+        }
+    }
+    val createProjectViewModelFactory: ViewModelProvider.Factory = viewModelFactory {
+        initializer {
+            CreateProjectScreenViewModel(
+                patternRepository = patternRepository,
+                createProjectUseCase = CreateProjectUseCase(
+                    projectRepository = projectRepository,
+                    patternRepository = patternRepository,
+                    projectWithPatternDao = crocherDatabase.projectWithPatternDao()
+                )
             )
         }
     }

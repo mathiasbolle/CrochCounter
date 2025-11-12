@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -30,16 +31,31 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import be.mbolle.crochcounter.R
+import be.mbolle.crochcounter.core.presentation.composables.CreateFabButton
 import be.mbolle.crochcounter.core.presentation.composables.SearchCrochCounter
 import be.mbolle.crochcounter.ui.theme.CrochCounterTheme
+
+// convert this to a composable that creates a project and a composable that just reads the project LIKE A GET
+@Composable
+fun CreateProjectSearchableScreen(
+    modifier: Modifier = Modifier,
+    searchbarLabel: String = "Name of the project",
+    paddingValues: PaddingValues,
+    searchableViewModel: SearchableViewModel,
+    navigateToCreateProject: () -> Unit,
+) {
+
+}
 
 @Composable
 fun SearchableScreen(
     modifier: Modifier = Modifier,
     searchbarLabel: String = "Name of the project",
+    createProject: Boolean = true,
     paddingValues: PaddingValues,
     searchableViewModel: SearchableViewModel,
-    navigateToMainMenu: (projectItem: String) -> Unit,
+    clickPatternItem: (projectItem: String) -> Unit,
+    navigateToCreateProject: () -> Unit, // refactor
 ) {
 
     val items = searchableViewModel.items.collectAsState()
@@ -68,7 +84,19 @@ fun SearchableScreen(
             paddingValues = PaddingValues(horizontal = 5.dp),
             items = items.value
         ) { item ->
-            navigateToMainMenu(item)
+                clickPatternItem(item)
+        }
+
+        if (createProject) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                CreateFabButton {
+                    navigateToCreateProject()
+                }
+            }
         }
     }
 }
@@ -138,7 +166,8 @@ fun SearchableScreenPreview() {
 
     SearchableScreen(
         paddingValues = PaddingValues(),
-        searchableViewModel = searchableViewModel
+        searchableViewModel = searchableViewModel,
+        clickPatternItem = {}
     ) {
         /** no navigation in this preview. */
     }

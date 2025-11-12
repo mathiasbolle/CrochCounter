@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -19,15 +20,16 @@ import be.mbolle.crochcounter.core.presentation.screens.search.ProjectSearchable
 import be.mbolle.crochcounter.core.presentation.screens.search.ProjectViewModelFactory
 import be.mbolle.crochcounter.core.presentation.screens.search.SearchableScreen
 import be.mbolle.crochcounter.core.presentation.screens.search.SearchableViewModel
-import be.mbolle.crochcounter.projects.presentation.screens.project.ProjectScreen
-import be.mbolle.crochcounter.ui.CrochCounterViewModel
-import be.mbolle.crochcounter.ui.CrochCounterViewModelFactory
 import be.mbolle.crochcounter.core.presentation.util.ScreenWithTopBar
 import be.mbolle.crochcounter.patterns.screens.PatternMainScreen
 import be.mbolle.crochcounter.patterns.screens.PatternMainViewModel
-import be.mbolle.crochcounter.projects.presentation.screens.search.SearchProjectScreen
+import be.mbolle.crochcounter.projects.presentation.screens.create.CreateProjectScreen
+import be.mbolle.crochcounter.projects.presentation.screens.create.CreateProjectScreenViewModel
+import be.mbolle.crochcounter.projects.presentation.screens.project.ProjectScreen
 import be.mbolle.crochcounter.projects.presentation.screens.search.SearchProjectViewModel
 import be.mbolle.crochcounter.projects.presentation.screens.search.SearchProjectViewModelFactory
+import be.mbolle.crochcounter.ui.CrochCounterViewModel
+import be.mbolle.crochcounter.ui.CrochCounterViewModelFactory
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -37,6 +39,9 @@ object ProjectScreens {
 
     @Serializable
     object ProjectSearchScreen
+
+    @Serializable
+    object ProjectCreateScreen
 }
 
 @Serializable
@@ -97,16 +102,21 @@ fun NavGraphBuilder.patternNavGraph(navControl: NavHostController) {
                 SearchableScreen(
                     paddingValues = PaddingValues(),
                     searchableViewModel = patternViewModel,
-                    searchbarLabel = "Name of the pattern"
-                ) { patternItem ->
-                    //crochCounterViewModel.makeProjectVisible(projectItem)
-                    //now pass it as parameter, there is no reason to make a global crochCounterViewModel..
-                    navControl.navigate(PatternScreens.PatternMainScreen(name = patternItem))
-                }
+                    searchbarLabel = "Name of the pattern",
+                    clickPatternItem = { patternItem ->
+                        //crochCounterViewModel.makeProjectVisible(projectItem)
+                        //now pass it as parameter, there is no reason to make a global crochCounterViewModel..
+                        navControl.navigate(PatternScreens.PatternMainScreen(name = patternItem))
+                    },
+                    navigateToCreateProject = {
+                        //TODO pattern issue
+                    }
+                )
             }
         }
         composable<PatternScreens.PatternMainScreen> {
-            val patternMainViewModel: PatternMainViewModel = viewModel(factory = MainApplication.container.crochetFactory)
+            val patternMainViewModel: PatternMainViewModel =
+                viewModel(factory = MainApplication.container.crochetFactory)
 
             val crochCounterViewModel: CrochCounterViewModel = viewModel(
                 factory = CrochCounterViewModelFactory(
@@ -169,13 +179,11 @@ fun NavGraphBuilder.projectNavGraph(navController: NavHostController) {
                 )
             )
 
-            val searchProjectViewModel = viewModel<SearchProjectViewModel>(
+            viewModel<SearchProjectViewModel>(
                 factory = SearchProjectViewModelFactory(
                     LocalContext.current
                 )
             )
-
-
             val searchProjectViewModel2 = viewModel<ProjectSearchableViewModel>(
                 factory = ProjectViewModelFactory(LocalContext.current)
             )
@@ -193,12 +201,58 @@ fun NavGraphBuilder.projectNavGraph(navController: NavHostController) {
                 SearchableScreen(
                     paddingValues = PaddingValues(),
                     //searchProjectViewModel = searchProjectViewModel,
-                    searchableViewModel = searchProjectViewModel2
-                ) { projectItem ->
-                    crochCounterViewModel.makeProjectVisible(projectItem)
-                    navController.navigate(ProjectScreens.ProjectScreenNav)
-                }
+                    searchableViewModel = searchProjectViewModel2,
+                    clickPatternItem = { projectItem ->
+                        crochCounterViewModel.makeProjectVisible(projectItem)
+                        navController.navigate(ProjectScreens.ProjectScreenNav)
+                    },
+                    navigateToCreateProject = {
+                        navController.navigate(ProjectScreens.ProjectCreateScreen)
+                    }
+                )
             }
         }
+
+        composable<ProjectScreens.ProjectCreateScreen> {
+            val patternMainViewModel: CreateProjectScreenViewModel =
+                viewModel(factory = MainApplication.container.createProjectViewModelFactory)
+
+            ScreenWithTopBar(navController) {
+                CreateProjectScreen(
+                    paddingValues = PaddingValues(),
+                    navigateToMainMenu = {
+
+                    },
+                    navigateToCreateProject = {
+
+                    },
+                    createProjectScreenViewModel = patternMainViewModel
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ScreenWithTopBar(
+    navController: NavController,
+    content: @Composable() () -> Unit
+) {
+    val crochCounterViewModel: CrochCounterViewModel = viewModel(
+        factory = CrochCounterViewModelFactory(
+            LocalContext.current
+        )
+    )
+    ScreenWithTopBar(
+        enableActions = false,
+        crochCounterViewModel = crochCounterViewModel,
+        navigateToProject = {
+            navController.navigate(ProjectScreens.ProjectSearchScreen)
+        },
+        navigateToPatterns = {
+            navController.navigate(PatternScreens)
+        }
+    ) {
+        content()
     }
 }
