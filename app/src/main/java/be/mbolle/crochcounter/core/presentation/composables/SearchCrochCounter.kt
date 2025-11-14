@@ -4,6 +4,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
@@ -26,12 +27,17 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import be.mbolle.crochcounter.ui.theme.CrochCounterTheme
 
+/**
+ * finer composable with the option to fill in an icon
+ */
 @Composable
-fun SearchCrochCounter(
+fun InputSearchCrochCounter(
     modifier: Modifier = Modifier,
     initialText: String,
+    icon: (@Composable() () -> Unit)? = null,
     wordState: TextFieldState
 ) {
+
     val interactionSource = remember { MutableInteractionSource()  }
     val focussed = interactionSource.collectIsFocusedAsState()
 
@@ -47,12 +53,8 @@ fun SearchCrochCounter(
                     .padding(16.dp)
                     .bottomBorder(Border(1.dp, Color(0XFFfe6689)))
             ) {
-                Icon(
-                    Icons.Default.Search,
-                    contentDescription = "Search icon",
-                    tint = Color(0XFFffa2b8)
-                )
-                Spacer(Modifier.width(7.dp))
+                icon?.invoke()
+
 
 
                 if ((!focussed.value) && wordState.text == "") {
@@ -62,8 +64,32 @@ fun SearchCrochCounter(
                         fontWeight = FontWeight.Light
                     )
                 }
+                if (icon == null)  {
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
                 innerTextField()
             }
+        }
+    )
+
+}
+@Composable
+fun SearchCrochCounter(
+    modifier: Modifier = Modifier,
+    initialText: String,
+    wordState: TextFieldState
+) {
+    InputSearchCrochCounter(
+        modifier = modifier,
+        initialText = initialText,
+        wordState = wordState,
+        icon = {
+            Icon(
+                Icons.Default.Search,
+                contentDescription = "Search icon",
+                tint = Color(0XFFffa2b8)
+            )
+            Spacer(Modifier.width(7.dp))
         }
     )
 }

@@ -55,7 +55,7 @@ fun SearchableScreen(
     paddingValues: PaddingValues,
     searchableViewModel: SearchableViewModel,
     clickPatternItem: (projectItem: String) -> Unit,
-    navigateToCreateProject: () -> Unit, // refactor
+    navigateToCreate: () -> Unit, // refactor
 ) {
 
     val items = searchableViewModel.items.collectAsState()
@@ -94,7 +94,7 @@ fun SearchableScreen(
                 verticalArrangement = Arrangement.Bottom
             ) {
                 CreateFabButton {
-                    navigateToCreateProject()
+                    navigateToCreate()
                 }
             }
         }

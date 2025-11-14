@@ -3,11 +3,13 @@ package be.mbolle.crochcounter.core.di
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import be.mbolle.crochcounter.core.data.db.CrochDatabase
 import be.mbolle.crochcounter.patterns.data.PatternRoomRepository
 import be.mbolle.crochcounter.patterns.screens.PatternMainViewModel
+import be.mbolle.crochcounter.patterns.screens.create.CreatePatternViewModel
 import be.mbolle.crochcounter.projects.data.ProjectRoomRepository
 import be.mbolle.crochcounter.projects.model.use_cases.CreateProjectUseCase
 import be.mbolle.crochcounter.projects.presentation.screens.create.CreateProjectScreenViewModel
@@ -34,6 +36,15 @@ class ProductionContainer(context: Context) : Container {
             )
         }
     }
+
+    val createPatternFactory : ViewModelProvider.Factory by lazy {
+        viewModelFactory {
+            initializer {
+                CreatePatternViewModel()
+            }
+        }
+    }
+
     val createProjectViewModelFactory: ViewModelProvider.Factory = viewModelFactory {
         initializer {
             CreateProjectScreenViewModel(

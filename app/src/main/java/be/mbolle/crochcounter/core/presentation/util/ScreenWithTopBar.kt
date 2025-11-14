@@ -21,14 +21,16 @@ import be.mbolle.crochcounter.core.presentation.composables.TopCrochBar
 import be.mbolle.crochcounter.ui.CrochCounterViewModel
 
 @Composable
-fun ScreenWithTopBar(modifier: Modifier = Modifier,
-                     enableActions: Boolean,
-                     crochCounterViewModel: CrochCounterViewModel,
-                     navigateToProject: () -> Unit,
-                     navigateToPatterns: () -> Unit,
-                     name: String = stringResource(R.string.project_title),
+fun ScreenWithTopBar(
+    modifier: Modifier = Modifier,
+    enableActions: Boolean,
+    crochCounterViewModel: CrochCounterViewModel,
+    navigateToProject: () -> Unit,
+    navigateToPatterns: () -> Unit,
+    name: String = stringResource(R.string.project_title),
 
-                     screen: @Composable () -> Unit) {
+    screen: @Composable () -> Unit
+) {
     Scaffold(
         modifier = modifier
             .background(color = Color(0XFFFFD6E0))
@@ -39,7 +41,7 @@ fun ScreenWithTopBar(modifier: Modifier = Modifier,
         containerColor = Color(0XFFFEE2E9),
         topBar = {
             TopCrochBar(
-                name =name,
+                name = name,
                 navigateToProjects = {
                     navigateToProject()
                 },
@@ -61,6 +63,34 @@ fun ScreenWithTopBar(modifier: Modifier = Modifier,
             }
         }
 
+        Box(modifier = modifier.padding(innerPadding)) {
+            screen()
+        }
+    }
+}
+
+@Composable
+fun ScreenWithoutTopBar(
+    modifier: Modifier = Modifier,
+    screen: @Composable () -> Unit
+) {
+    Scaffold(
+        modifier = modifier
+            .background(color = Color(0XFFFFD6E0))
+            .statusBarsPadding()
+            .background(color = Color(0XFFFEE2E9))
+            .systemBarsPadding()
+            .fillMaxSize(),
+        containerColor = Color(0XFFFEE2E9),
+    ) { innerPadding ->
+        val lifecycleOwner = LocalLifecycleOwner.current
+        val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
+
+        LaunchedEffect(lifecycleState) {
+            if (lifecycleState == Lifecycle.State.RESUMED) {
+                //crochCounterViewModel.refreshCache()
+            }
+        }
         Box(modifier = modifier.padding(innerPadding)) {
             screen()
         }

@@ -23,6 +23,7 @@ import be.mbolle.crochcounter.projects.model.PatternItem
 import be.mbolle.crochcounter.projects.model.SubPattern
 import be.mbolle.crochcounter.projects.presentation.composables.Counter
 import be.mbolle.crochcounter.projects.presentation.composables.PatternTimeline
+import be.mbolle.crochcounter.projects.presentation.composables.base.Addbutton
 import be.mbolle.crochcounter.projects.presentation.composables.base.Button
 import be.mbolle.crochcounter.ui.CrochCounterProjectState
 import be.mbolle.crochcounter.ui.CrochCounterViewModel
@@ -160,7 +161,7 @@ fun CrochContent(
                 modifier = Modifier.requiredHeight(280.dp),
                 patterns = pattern
             )
-            Button(
+            Addbutton(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     increaseValue()

@@ -21,8 +21,12 @@ import be.mbolle.crochcounter.core.presentation.screens.search.ProjectViewModelF
 import be.mbolle.crochcounter.core.presentation.screens.search.SearchableScreen
 import be.mbolle.crochcounter.core.presentation.screens.search.SearchableViewModel
 import be.mbolle.crochcounter.core.presentation.util.ScreenWithTopBar
+import be.mbolle.crochcounter.core.presentation.util.ScreenWithoutTopBar
 import be.mbolle.crochcounter.patterns.screens.PatternMainScreen
 import be.mbolle.crochcounter.patterns.screens.PatternMainViewModel
+import be.mbolle.crochcounter.patterns.screens.create.CreatePatternViewModel
+import be.mbolle.crochcounter.patterns.screens.create.name.CreateNameOfPattern
+import be.mbolle.crochcounter.patterns.screens.create.patternItems.PatternItemScreen
 import be.mbolle.crochcounter.projects.presentation.screens.create.CreateProjectScreen
 import be.mbolle.crochcounter.projects.presentation.screens.create.CreateProjectScreenViewModel
 import be.mbolle.crochcounter.projects.presentation.screens.project.ProjectScreen
@@ -52,6 +56,20 @@ object PatternScreens {
 
     @Serializable
     object PatternSearchScreen
+
+
+    @Serializable
+    object PatternCreateScreen {
+
+        @Serializable
+        object CreateNameSubscreen
+
+        @Serializable
+        object CreatePatternPartsSubscreen
+
+        @Serializable
+        object SummarySubScreen
+    }
 }
 
 @Composable
@@ -59,6 +77,7 @@ fun CrochCounterRoot(
     modifier: Modifier = Modifier
 ) {
     val navControl = rememberNavController()
+    val createPatternViewModel = viewModel(factory = MainApplication.container.createPatternFactory) as CreatePatternViewModel
 
     NavHost(
         navController = navControl,
@@ -67,6 +86,27 @@ fun CrochCounterRoot(
     ) {
         projectNavGraph(navControl)
         patternNavGraph(navControl)
+        patternCreationNavGraph(navControl, createPatternViewModel)
+    }
+}
+
+fun NavGraphBuilder.patternCreationNavGraph(navControl: NavHostController, vm: CreatePatternViewModel) {
+    navigation<PatternScreens.PatternCreateScreen>(
+        startDestination = PatternScreens.PatternCreateScreen.CreateNameSubscreen
+    ) {
+        composable<PatternScreens.PatternCreateScreen.CreateNameSubscreen> {
+            ScreenWithoutTopBar {
+                CreateNameOfPattern(createPatternViewModel = vm) {
+                    navControl.navigate(PatternScreens.PatternCreateScreen.CreatePatternPartsSubscreen)
+                }
+            }
+        }
+
+        composable<PatternScreens.PatternCreateScreen.CreatePatternPartsSubscreen> {
+            ScreenWithoutTopBar {
+                PatternItemScreen(createPatternViewModel = vm)
+            }
+        }
     }
 }
 
@@ -108,8 +148,12 @@ fun NavGraphBuilder.patternNavGraph(navControl: NavHostController) {
                         //now pass it as parameter, there is no reason to make a global crochCounterViewModel..
                         navControl.navigate(PatternScreens.PatternMainScreen(name = patternItem))
                     },
-                    navigateToCreateProject = {
+                    navigateToCreate = {
                         //TODO pattern issue
+                        navControl.navigate(
+                            PatternScreens.PatternCreateScreen
+
+                        )
                     }
                 )
             }
@@ -206,7 +250,7 @@ fun NavGraphBuilder.projectNavGraph(navController: NavHostController) {
                         crochCounterViewModel.makeProjectVisible(projectItem)
                         navController.navigate(ProjectScreens.ProjectScreenNav)
                     },
-                    navigateToCreateProject = {
+                    navigateToCreate = {
                         navController.navigate(ProjectScreens.ProjectCreateScreen)
                     }
                 )

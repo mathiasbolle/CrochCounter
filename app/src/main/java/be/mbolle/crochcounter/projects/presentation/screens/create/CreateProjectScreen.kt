@@ -47,7 +47,7 @@ fun CreateProjectScreen(
             clickPatternItem = {
                 createProjectScreenViewModel.choseSelectedPattern(it)
             },
-            navigateToCreateProject = {
+            navigateToCreate = {
             }
         )
     }
