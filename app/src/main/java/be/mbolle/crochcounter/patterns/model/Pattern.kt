@@ -1,5 +1,7 @@
 package be.mbolle.crochcounter.projects.model
 
+import be.mbolle.crochcounter.patterns.model.PatternItem
+
 class Pattern(
     val activeLine: Int,
     title: String,

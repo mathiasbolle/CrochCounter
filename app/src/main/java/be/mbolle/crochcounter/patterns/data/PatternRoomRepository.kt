@@ -11,12 +11,14 @@ class PatternRoomRepository(private val patternDao: PatternDao) : PatternReposit
         return patternDao.getPatternByName(name)
     }
 
-    override suspend fun createPattern(name: String) {
+    override suspend fun createPattern(name: String): be.mbolle.crochcounter.patterns.data.Pattern {
         patternDao.createPattern(
             Pattern(
                 name = name
             )
         )
+
+        return getPatternByName(name)!!
     }
 
     override suspend fun deletePattern(name: String) {

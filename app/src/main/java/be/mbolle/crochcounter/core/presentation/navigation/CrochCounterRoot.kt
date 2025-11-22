@@ -77,7 +77,8 @@ fun CrochCounterRoot(
     modifier: Modifier = Modifier
 ) {
     val navControl = rememberNavController()
-    val createPatternViewModel = viewModel(factory = MainApplication.container.createPatternFactory) as CreatePatternViewModel
+    val createPatternViewModel =
+        viewModel(factory = MainApplication.container.createPatternFactory) as CreatePatternViewModel
 
     NavHost(
         navController = navControl,
@@ -90,7 +91,10 @@ fun CrochCounterRoot(
     }
 }
 
-fun NavGraphBuilder.patternCreationNavGraph(navControl: NavHostController, vm: CreatePatternViewModel) {
+fun NavGraphBuilder.patternCreationNavGraph(
+    navControl: NavHostController,
+    vm: CreatePatternViewModel
+) {
     navigation<PatternScreens.PatternCreateScreen>(
         startDestination = PatternScreens.PatternCreateScreen.CreateNameSubscreen
     ) {
@@ -163,9 +167,8 @@ fun NavGraphBuilder.patternNavGraph(navControl: NavHostController) {
                 viewModel(factory = MainApplication.container.crochetFactory)
 
             val crochCounterViewModel: CrochCounterViewModel = viewModel(
-                factory = CrochCounterViewModelFactory(
-                    LocalContext.current
-                )
+                viewModelStoreOwner = MainApplication.container.activityViewModelStore,
+                factory = CrochCounterViewModelFactory.getInstance(MainApplication.container.context)
             )
             ScreenWithTopBar(
                 name = "Patterns",
@@ -190,9 +193,8 @@ fun NavGraphBuilder.projectNavGraph(navController: NavHostController) {
     ) {
         composable<ProjectScreens.ProjectScreenNav> {
             val crochCounterViewModel: CrochCounterViewModel = viewModel(
-                factory = CrochCounterViewModelFactory(
-                    LocalContext.current
-                )
+                viewModelStoreOwner = MainApplication.container.activityViewModelStore,
+                factory = CrochCounterViewModelFactory.getInstance(MainApplication.container.context)
             )
             ScreenWithTopBar(
                 enableActions = true,
@@ -218,9 +220,8 @@ fun NavGraphBuilder.projectNavGraph(navController: NavHostController) {
             }
         ) {
             val crochCounterViewModel: CrochCounterViewModel = viewModel(
-                factory = CrochCounterViewModelFactory(
-                    LocalContext.current
-                )
+                viewModelStoreOwner = MainApplication.container.activityViewModelStore,
+                factory = CrochCounterViewModelFactory.getInstance(MainApplication.container.context)
             )
 
             viewModel<SearchProjectViewModel>(

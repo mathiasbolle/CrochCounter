@@ -19,12 +19,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import be.mbolle.crochcounter.R
 import be.mbolle.crochcounter.projects.model.Pattern
-import be.mbolle.crochcounter.projects.model.PatternItem
+import be.mbolle.crochcounter.patterns.model.PatternItem
 import be.mbolle.crochcounter.projects.model.SubPattern
 import be.mbolle.crochcounter.projects.presentation.composables.Counter
 import be.mbolle.crochcounter.projects.presentation.composables.PatternTimeline
 import be.mbolle.crochcounter.projects.presentation.composables.base.Addbutton
-import be.mbolle.crochcounter.projects.presentation.composables.base.Button
 import be.mbolle.crochcounter.ui.CrochCounterProjectState
 import be.mbolle.crochcounter.ui.CrochCounterViewModel
 import be.mbolle.crochcounter.ui.theme.CrochCounterTheme

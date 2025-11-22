@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import be.mbolle.crochcounter.R
 import be.mbolle.crochcounter.projects.presentation.composables.base.ProjectDropdownMenu
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

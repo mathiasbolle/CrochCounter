@@ -1,18 +1,24 @@
 package be.mbolle.crochcounter.core.di
 
 import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import be.mbolle.crochcounter.MainActivity
 import be.mbolle.crochcounter.core.data.db.CrochDatabase
 import be.mbolle.crochcounter.patterns.data.PatternRoomRepository
+import be.mbolle.crochcounter.patterns.model.use_cases.CreatePatternUseCase
 import be.mbolle.crochcounter.patterns.screens.PatternMainViewModel
 import be.mbolle.crochcounter.patterns.screens.create.CreatePatternViewModel
 import be.mbolle.crochcounter.projects.data.ProjectRoomRepository
 import be.mbolle.crochcounter.projects.model.use_cases.CreateProjectUseCase
 import be.mbolle.crochcounter.projects.presentation.screens.create.CreateProjectScreenViewModel
+import be.mbolle.crochcounter.ui.CrochCounterViewModel
+import be.mbolle.crochcounter.ui.CrochCounterViewModelFactory
 
 /**
  * DI container for production
@@ -20,7 +26,11 @@ import be.mbolle.crochcounter.projects.presentation.screens.create.CreateProject
 
 
 interface Container
-class ProductionContainer(context: Context) : Container {
+class ProductionContainer(
+    val context: Context,
+    val activityViewModelStore: ViewModelStoreOwner
+) :
+    Container {
     val crocherDatabase = CrochDatabase.getDatabase(context)
     val patternRepository = PatternRoomRepository(crocherDatabase.patternDao())
     val projectRepository = ProjectRoomRepository(crocherDatabase.crochDao())
@@ -37,13 +47,19 @@ class ProductionContainer(context: Context) : Container {
         }
     }
 
-    val createPatternFactory : ViewModelProvider.Factory by lazy {
+    val createPatternFactory: ViewModelProvider.Factory by lazy {
         viewModelFactory {
             initializer {
-                CreatePatternViewModel()
+                CreatePatternViewModel(
+                    CreatePatternUseCase(
+                        patternRepository = patternRepository,
+                        patternItemDao = crocherDatabase.patternItemDao()
+                    )
+                )
             }
         }
     }
+
 
     val createProjectViewModelFactory: ViewModelProvider.Factory = viewModelFactory {
         initializer {

@@ -22,6 +22,8 @@ class CrochCounterViewModel(
         private set
 
     fun enableOverlayService(value: Boolean) {
+        Timber.d("from the enableOverlayService:")
+        Timber.d(value.toString())
         isOverlayEnabled = value
     }
 

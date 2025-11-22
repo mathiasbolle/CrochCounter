@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -34,6 +36,7 @@ import be.mbolle.crochcounter.ui.theme.CrochCounterTheme
 fun InputSearchCrochCounter(
     modifier: Modifier = Modifier,
     initialText: String,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     icon: (@Composable() () -> Unit)? = null,
     wordState: TextFieldState
 ) {
@@ -42,9 +45,13 @@ fun InputSearchCrochCounter(
     val focussed = interactionSource.collectIsFocusedAsState()
 
     BasicTextField(
+        keyboardOptions = keyboardOptions,
         state = wordState,
         modifier = modifier,
         interactionSource = interactionSource,
+        textStyle = LocalTextStyle.current.copy(
+            color = Color(0xFFfe6689)
+        ),
 
 
         decorator = { innerTextField ->

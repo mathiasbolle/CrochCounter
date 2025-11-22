@@ -1,37 +1,35 @@
 package be.mbolle.crochcounter.patterns.screens.create.patternItems
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsEndWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.sharp.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,7 +43,10 @@ import be.mbolle.crochcounter.projects.presentation.composables.base.AddButtonCi
 import be.mbolle.crochcounter.projects.presentation.composables.base.Button
 
 @Composable
-fun PatternItemScreen(modifier: Modifier = Modifier, createPatternViewModel: CreatePatternViewModel) {
+fun PatternItemScreen(
+    modifier: Modifier = Modifier,
+    createPatternViewModel: CreatePatternViewModel
+) {
     CreatePatternBaseScreen(
         modifier = modifier.fillMaxSize(),
         progressIndicator = 0.7f,
@@ -64,8 +65,8 @@ fun PatternItemScreen(modifier: Modifier = Modifier, createPatternViewModel: Cre
                 fontWeight = FontWeight.Bold,
                 color = Color(0XFFFF8CA7)
             )
-            Column(horizontalAlignment = Alignment.Start) {
-                PatternItemPreview()
+            PatternItemPart(createPatternViewModel.subpatterns) {
+                createPatternViewModel.addNewSubPattern()
             }
         }
     }
@@ -107,96 +108,120 @@ fun Actions(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun PatternItem(patternItem: PatternItem) {
-}
-
-@Composable
-fun PatternItemList(patternItems: List<PatternItem>) {
-}
-
-@Composable
-@Preview
-fun PatternItemPreview() {
-    Column(
-        modifier = Modifier
-            .width(IntrinsicSize.Max)
-            .defaultMinSize(minWidth = 300.dp)
-    ) {
-        Row(modifier = Modifier.height(IntrinsicSize.Max)) {
+fun PatternItemHeader() {
+    Column {
+        Row(modifier = Modifier.fillMaxWidth()) {
             InputSearchCrochCounter(
-                initialText = "Type the section",
+                initialText = "Type the content",
                 wordState = TextFieldState(),
-                modifier = Modifier.weight(1f).fillMaxWidth()
+                modifier = Modifier
+                    .alignByBaseline()
+                    .weight(90f)
             )
-            Column(
-                modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    painterResource(R.drawable.comment),
-                    contentDescription = "comment",
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+            val commentPainter = painterResource(R.drawable.comment)
+            Image(
+                painter = commentPainter,
+                contentDescription = "a nice comment",
+                modifier = Modifier
+                    .weight(10f)
+                    .size(24.dp)
+                    .clickable {
+                    }
+            )
         }
-        Column(horizontalAlignment = Alignment.End, modifier = Modifier.fillMaxWidth()) {
-            Column(modifier = Modifier.width(IntrinsicSize.Min)) {
+    }
+}
 
-                Column(
-                    modifier = Modifier
-                        .border(
-                            BorderStroke(1.dp, Color(0XFFffa2b8)),
-                            shape = RoundedCornerShape(15.dp)
-                        )
-                        .padding(5.dp)
-                        .width(IntrinsicSize.Max)
-                        .defaultMinSize(minWidth = 200.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Row(modifier = Modifier.height(IntrinsicSize.Min)) {
-                        Column(
-                            modifier = Modifier.fillMaxHeight(),
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                "1",
-                                color = Color(0XFFfe6689),
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 17.sp
-                            )
-
-                        }
-                        InputSearchCrochCounter(
-                            initialText = "Type the content",
-                            wordState = TextFieldState(),
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                    Row(modifier = Modifier.height(IntrinsicSize.Min)) {
-                        Column(
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxHeight()
-                        ) {
-                            Icon(
-                                painterResource(R.drawable.comment),
-                                contentDescription = "comment",
-                                Modifier
-                                    .alpha(0.2f)
-                                    .size(24.dp)
-                            )
-                        }
-                        InputSearchCrochCounter(
-                            initialText = "Range",
-                            wordState = TextFieldState(),
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                }
-                AddButtonCircular(modifier = Modifier.padding(vertical = 10.dp)) {
-                    /*add a new subsection*/
-                }
+@Composable
+fun PatternItemPart(
+    patternItems: SnapshotStateList<PatternItem?>,
+    onClick: () -> Unit,
+) {
+    Column {
+        PatternItemHeader()
+        Column(
+            modifier = Modifier.padding(start = 40.dp)
+        ) {
+            PatternItemList(patternItems)
+            AddButtonCircular(modifier = Modifier.padding(vertical = 10.dp)) {
+                onClick()
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun PatternItemPartPreview() {
+    PatternItemPart(listOf<PatternItem?>() as SnapshotStateList<PatternItem?>) {
+
+    }
+}
+
+@Composable
+fun PatternItemList(patternItemList: List<PatternItem?>) {
+
+    LazyColumn() {
+        items(patternItemList) {
+            PatternItem2(it, modifier = Modifier.padding(vertical = 20.dp))
+        }
+    }
+}
+
+@Composable
+fun PatternItem2(patternItem: PatternItem? = null, modifier: Modifier = Modifier) {
+
+    Column(
+        modifier = modifier
+            .border(
+                1.dp, Color(0XFFfe6689),
+                shape = RoundedCornerShape(20)
+            )
+            .padding(5.dp)
+    ) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text("1", modifier = Modifier.alignByBaseline())
+            InputSearchCrochCounter(
+                initialText = "Type the content",
+                wordState = TextFieldState(initialText = patternItem?.content ?: ""),
+                modifier = Modifier
+                    .alignByBaseline()
+                    .weight(1f)
+            )
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            val commentPainter = painterResource(R.drawable.comment)
+            Image(
+                painter = commentPainter,
+                contentDescription = "a nice comment",
+                modifier = Modifier
+                    .weight(1f)
+                    .size(24.dp)
+                    .clickable {
+
+                    }
+            )
+            InputSearchCrochCounter(
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                ),
+                initialText = "Range",
+                wordState = TextFieldState(initialText = patternItem?.comment ?: ""),
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PatternItem2Preview() {
+    val patternItem = PatternItem(content = "R1: qosjdfioqsdjfoijq", comment = "hmmm")
+    PatternItem2(patternItem)
+}
+
+@Preview
+@Composable
+fun PatternItemSSectionPreview() {
+    PatternItemHeader()
 }

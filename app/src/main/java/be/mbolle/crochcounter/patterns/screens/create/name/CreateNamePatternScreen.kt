@@ -95,7 +95,5 @@ private fun NextButton(onClick: () -> Unit) {
 @Preview
 @Composable
 fun CreateNameOfPatternPreview() {
-    CreateNameOfPattern(createPatternViewModel = CreatePatternViewModel()) {
 
-    }
 }

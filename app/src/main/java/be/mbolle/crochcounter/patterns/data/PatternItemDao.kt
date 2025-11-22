@@ -1,6 +1,7 @@
 package be.mbolle.crochcounter.patterns.data
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 
@@ -11,4 +12,7 @@ interface PatternItemDao {
 
     @Query("SELECT * FROM pattern_items WHERE patternItemRef = :parentId")
     suspend fun getPatternItemSubtitle(parentId: Long): List<PatternItem>
+
+    @Insert
+    suspend fun insertPatternItem(patternItem: PatternItem): Long
 }

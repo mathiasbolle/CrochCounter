@@ -20,17 +20,18 @@ class MainActivity : ComponentActivity() {
 
     private val crochCounterViewModel by lazy {
         ViewModelProvider(
-            this,
-            CrochCounterViewModelFactory.getInstance(this)
+            MainApplication.container.activityViewModelStore,
+            CrochCounterViewModelFactory.getInstance(MainApplication.container.context)
         )[CrochCounterViewModel::class.java]
     }
-    //private var serviceIntent: Intent? = null
+    private var serviceIntent: Intent? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.plant(Timber.DebugTree())
 
+        Timber.tag("MainActivity").d(Settings.canDrawOverlays(this).toString())
         if (!Settings.canDrawOverlays(this)) {
             startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION))
             Log.d("MainActivity", "start activity!")
@@ -47,14 +48,18 @@ class MainActivity : ComponentActivity() {
 
     override fun onPause() {
         super.onPause()
-//
-//        if (Settings.canDrawOverlays(this) && crochCounterViewModel.isOverlayEnabled) {
-//            Log.d("MainActivity", "pause activity!")
-//            serviceIntent = Intent(this, CrochetService::class.java)
-//            serviceIntent?.action = Actions.START.toString()
-//
-//            startService(serviceIntent)
-//        }
+
+        Timber.d("onPause variables:")
+        Timber.d(Settings.canDrawOverlays(this).toString())
+        Timber.d(crochCounterViewModel.isOverlayEnabled.toString())
+
+        if (Settings.canDrawOverlays(this) && crochCounterViewModel.isOverlayEnabled) {
+            Log.d("MainActivity", "pause activity!")
+            serviceIntent = Intent(this, CrochetService::class.java)
+            serviceIntent?.action = Actions.START.toString()
+
+            startService(serviceIntent)
+        }
     }
 
     override fun onResume() {
@@ -65,8 +70,8 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-//        serviceIntent = Intent(this, CrochetService::class.java)
-//        serviceIntent?.action = Actions.STOP.toString()
-//        startService(serviceIntent)
+        serviceIntent = Intent(this, CrochetService::class.java)
+        serviceIntent?.action = Actions.STOP.toString()
+        startService(serviceIntent)
     }
 }

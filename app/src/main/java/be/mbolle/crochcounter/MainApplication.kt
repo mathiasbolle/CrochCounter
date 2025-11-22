@@ -1,10 +1,14 @@
 package be.mbolle.crochcounter
 
 import android.app.Application
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
 import be.mbolle.crochcounter.core.di.ProductionContainer
 
 
-class MainApplication : Application() {
+class MainApplication : Application(), ViewModelStoreOwner {
+
+    private val appViewModelStore = ViewModelStore()
 
     companion object {
         lateinit var container: ProductionContainer
@@ -14,7 +18,12 @@ class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        container = ProductionContainer(this)
-
+        container = ProductionContainer(
+            this,
+            this
+        )
     }
+
+    override val viewModelStore: ViewModelStore
+        get() = appViewModelStore
 }

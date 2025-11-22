@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.mbolle.crochcounter.R
 import be.mbolle.crochcounter.projects.model.Pattern
-import be.mbolle.crochcounter.projects.model.PatternItem
+import be.mbolle.crochcounter.patterns.model.PatternItem
 import be.mbolle.crochcounter.projects.model.SubPattern
 import be.mbolle.crochcounter.ui.theme.CrochCounterTheme
 
