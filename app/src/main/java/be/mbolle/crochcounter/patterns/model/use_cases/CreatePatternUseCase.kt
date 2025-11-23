@@ -50,7 +50,7 @@ class CreatePatternUseCase(
         val patternItemTitle = patternItemDao.getPatternItemTitle(id)
 
         //refer all the subpatterns to that title
-        subPatterns
+        subPatterns.filter { !it.isTitle }
             .forEach {
                 patternItemDao.insertPatternItem(
                     PatternItem(

@@ -50,7 +50,8 @@ class CreatePatternViewModel(
 
                 subpatternItem?.patternItemList?.map {
                     PatternItem(
-                        description = it?.content?.text.toString()
+                        description = it?.content?.text.toString(),
+                        isTitle = false
                     )
                 }?.plus(
                     PatternItem(
