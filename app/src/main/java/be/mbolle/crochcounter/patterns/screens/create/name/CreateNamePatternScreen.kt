@@ -46,7 +46,7 @@ fun CreateNameOfPattern(
             }
         }, contentAlignment = Alignment.Center
     ) {
-        Content(textFieldState = createPatternViewModel.searchName)
+        Content(textFieldState = createPatternViewModel.patternName)
 
     }
 }

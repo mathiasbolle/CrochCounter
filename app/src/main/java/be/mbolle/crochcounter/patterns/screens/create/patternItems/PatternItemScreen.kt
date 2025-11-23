@@ -13,13 +13,13 @@ import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
@@ -45,18 +45,27 @@ import be.mbolle.crochcounter.projects.presentation.composables.base.Button
 @Composable
 fun PatternItemScreen(
     modifier: Modifier = Modifier,
-    createPatternViewModel: CreatePatternViewModel
+    createPatternViewModel: CreatePatternViewModel,
+    navigateToCurrentScreen: () -> Unit,
 ) {
     CreatePatternBaseScreen(
         modifier = modifier.fillMaxSize(),
         progressIndicator = 0.7f,
         actions = {
-            Actions()
+            Actions(
+                onClickNextSection = {
+                    createPatternViewModel.addEmptyPatternItem()
+                    navigateToCurrentScreen()
+                },
+                onConfirm = {
+                    createPatternViewModel.confirm()
+                }
+            )
         }, contentAlignment = Alignment.TopCenter
     ) {
         Column {
             Text(
-                "What are the parts of ${createPatternViewModel.searchName.text}",
+                "What are the parts of ${createPatternViewModel.patternName.text}",
                 modifier = Modifier
                     .padding(top = 20.dp, bottom = 20.dp)
                     .semantics(properties = { contentDescription = "Project name counter" }),
@@ -65,15 +74,20 @@ fun PatternItemScreen(
                 fontWeight = FontWeight.Bold,
                 color = Color(0XFFFF8CA7)
             )
-            PatternItemPart(createPatternViewModel.subpatterns) {
-                createPatternViewModel.addNewSubPattern()
+            PatternItemPart(
+                createPatternViewModel.subpatterns?.patternItemList ?: emptyList(),
+                { index, content ->
+                    createPatternViewModel.addSubPatternContent(index, content)
+                }
+            ) {
+                createPatternViewModel.addEmptySubPattern()
             }
         }
     }
 }
 
 @Composable
-fun Actions(modifier: Modifier = Modifier) {
+fun Actions(modifier: Modifier = Modifier, onClickNextSection: () -> Unit, onConfirm: () -> Unit) {
     Row(modifier = modifier) {
         Button(
             fontSize = 20.sp,
@@ -88,7 +102,9 @@ fun Actions(modifier: Modifier = Modifier) {
                         .fillMaxHeight()
                         .requiredWidth(40.dp),
                 )
-            }, onClick = {}
+            }, onClick = {
+                onClickNextSection()
+            }
         )
         Button(
             fontSize = 20.sp,
@@ -103,7 +119,9 @@ fun Actions(modifier: Modifier = Modifier) {
                         .fillMaxHeight()
                         .requiredWidth(40.dp),
                 )
-            }, onClick = {})
+            }, onClick = {
+                onConfirm()
+            })
     }
 }
 
@@ -134,7 +152,8 @@ fun PatternItemHeader() {
 
 @Composable
 fun PatternItemPart(
-    patternItems: SnapshotStateList<PatternItem?>,
+    patternItems: List<PatternItem?>,
+    addSubpatternContent: (index: Int, content: String) -> Unit,
     onClick: () -> Unit,
 ) {
     Column {
@@ -142,7 +161,9 @@ fun PatternItemPart(
         Column(
             modifier = Modifier.padding(start = 40.dp)
         ) {
-            PatternItemList(patternItems)
+            PatternItemList(patternItems) { index, content ->
+                addSubpatternContent(index, content)
+            }
             AddButtonCircular(modifier = Modifier.padding(vertical = 10.dp)) {
                 onClick()
             }
@@ -153,23 +174,38 @@ fun PatternItemPart(
 @Preview
 @Composable
 fun PatternItemPartPreview() {
-    PatternItemPart(listOf<PatternItem?>() as SnapshotStateList<PatternItem?>) {
-
-    }
+    PatternItemPart(
+        listOf<PatternItem?>() as SnapshotStateList<PatternItem?>,
+        onClick = {},
+        addSubpatternContent = { index, content ->
+        })
 }
 
 @Composable
-fun PatternItemList(patternItemList: List<PatternItem?>) {
-
+fun PatternItemList(
+    patternItemList: List<PatternItem?>,
+    addSubpatternContent: (index: Int, content: String) -> Unit,
+) {
     LazyColumn() {
-        items(patternItemList) {
-            PatternItem2(it, modifier = Modifier.padding(vertical = 20.dp))
+        itemsIndexed(patternItemList) { index, key ->
+            PatternItem2(
+                key,
+                modifier = Modifier.padding(vertical = 20.dp),
+                addSubpatternContent = { _, content ->
+                    addSubpatternContent(index, content)
+                })
         }
     }
 }
 
 @Composable
-fun PatternItem2(patternItem: PatternItem? = null, modifier: Modifier = Modifier) {
+fun PatternItem2(
+    patternItem: PatternItem? = null,
+    addSubpatternContent: (index: Int, content: String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val textfieldState = remember { TextFieldState(initialText = patternItem?.content ?: "") }
+
 
     Column(
         modifier = modifier
@@ -183,7 +219,7 @@ fun PatternItem2(patternItem: PatternItem? = null, modifier: Modifier = Modifier
             Text("1", modifier = Modifier.alignByBaseline())
             InputSearchCrochCounter(
                 initialText = "Type the content",
-                wordState = TextFieldState(initialText = patternItem?.content ?: ""),
+                wordState = textfieldState,
                 modifier = Modifier
                     .alignByBaseline()
                     .weight(1f)
@@ -217,7 +253,12 @@ fun PatternItem2(patternItem: PatternItem? = null, modifier: Modifier = Modifier
 @Composable
 fun PatternItem2Preview() {
     val patternItem = PatternItem(content = "R1: qosjdfioqsdjfoijq", comment = "hmmm")
-    PatternItem2(patternItem)
+    PatternItem2(
+        patternItem,
+        addSubpatternContent = { index, content -> {
+
+        }  }
+    )
 }
 
 @Preview

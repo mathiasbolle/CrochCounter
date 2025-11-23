@@ -28,9 +28,8 @@ class CreatePatternUseCase(
     }
 
     private suspend fun createPattern(name: String): Pattern {
-        if (!name.isEmpty()) {
+        if (name.isEmpty()) {
             throw IllegalArgumentException("no.")
-
         }
         return patternRepository.createPattern(name)
     }

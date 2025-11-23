@@ -108,7 +108,9 @@ fun NavGraphBuilder.patternCreationNavGraph(
 
         composable<PatternScreens.PatternCreateScreen.CreatePatternPartsSubscreen> {
             ScreenWithoutTopBar {
-                PatternItemScreen(createPatternViewModel = vm)
+                PatternItemScreen(createPatternViewModel = vm, navigateToCurrentScreen = {
+                    navControl.navigate(PatternScreens.PatternCreateScreen.CreatePatternPartsSubscreen)
+                })
             }
         }
     }
