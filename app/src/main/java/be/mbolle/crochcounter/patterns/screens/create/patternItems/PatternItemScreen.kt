@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,7 +19,6 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,6 +73,7 @@ fun PatternItemScreen(
                 color = Color(0XFFFF8CA7)
             )
             PatternItemPart(
+                createPatternViewModel.subpatterns?.subTitle ?: TextFieldState(),
                 createPatternViewModel.subpatterns?.patternItemList ?: emptyList(),
                 { index, content ->
                     createPatternViewModel.addSubPatternContent(index, content)
@@ -126,12 +125,12 @@ fun Actions(modifier: Modifier = Modifier, onClickNextSection: () -> Unit, onCon
 }
 
 @Composable
-fun PatternItemHeader() {
+fun PatternItemHeader(subtitle: TextFieldState) {
     Column {
         Row(modifier = Modifier.fillMaxWidth()) {
             InputSearchCrochCounter(
                 initialText = "Type the content",
-                wordState = TextFieldState(),
+                wordState = subtitle,
                 modifier = Modifier
                     .alignByBaseline()
                     .weight(90f)
@@ -152,12 +151,15 @@ fun PatternItemHeader() {
 
 @Composable
 fun PatternItemPart(
+    subTitle: TextFieldState,
     patternItems: List<PatternItem?>,
     addSubpatternContent: (index: Int, content: String) -> Unit,
     onClick: () -> Unit,
 ) {
     Column {
-        PatternItemHeader()
+        PatternItemHeader(
+            subtitle = subTitle
+        )
         Column(
             modifier = Modifier.padding(start = 40.dp)
         ) {
@@ -175,6 +177,7 @@ fun PatternItemPart(
 @Composable
 fun PatternItemPartPreview() {
     PatternItemPart(
+        subTitle = TextFieldState(),
         listOf<PatternItem?>() as SnapshotStateList<PatternItem?>,
         onClick = {},
         addSubpatternContent = { index, content ->
@@ -204,7 +207,6 @@ fun PatternItem2(
     addSubpatternContent: (index: Int, content: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val textfieldState = remember { TextFieldState(initialText = patternItem?.content ?: "") }
 
 
     Column(
@@ -219,7 +221,7 @@ fun PatternItem2(
             Text("1", modifier = Modifier.alignByBaseline())
             InputSearchCrochCounter(
                 initialText = "Type the content",
-                wordState = textfieldState,
+                wordState = patternItem?.content ?: TextFieldState(),
                 modifier = Modifier
                     .alignByBaseline()
                     .weight(1f)
@@ -252,7 +254,7 @@ fun PatternItem2(
 @Preview
 @Composable
 fun PatternItem2Preview() {
-    val patternItem = PatternItem(content = "R1: qosjdfioqsdjfoijq", comment = "hmmm")
+    val patternItem = PatternItem(content = TextFieldState("R1: qosjdfioqsdjfoijq"), comment = "hmmm")
     PatternItem2(
         patternItem,
         addSubpatternContent = { index, content -> {
@@ -264,5 +266,5 @@ fun PatternItem2Preview() {
 @Preview
 @Composable
 fun PatternItemSSectionPreview() {
-    PatternItemHeader()
+    PatternItemHeader(TextFieldState())
 }

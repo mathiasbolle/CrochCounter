@@ -37,7 +37,7 @@ fun InputSearchCrochCounter(
     modifier: Modifier = Modifier,
     initialText: String,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    icon: (@Composable() () -> Unit)? = null,
+    icon: @Composable (() -> Unit)? = null,
     wordState: TextFieldState
 ) {
 

@@ -21,13 +21,12 @@ class CreatePatternViewModel(
 
     private var trackedIndex = 0
 
-
     private val subpatternsList = mutableStateListOf<PatternItemPart?>(PatternItemPart())
 
     val subpatterns = subpatternsList[trackedIndex]
 
     fun addSubPatternContent(index: Int, content: String) {
-        subpatterns?.patternItemList?.get(index)?.copy(content = content)
+        //subpatterns?.patternItemList?.get(index)?.copy(content = content)
         Timber.d("You are getting called!")
     }
 
@@ -45,26 +44,27 @@ class CreatePatternViewModel(
 
     fun confirm() {
         for (subpatternItem in subpatternsList) {
+            Timber.d(subpatternItem.toString())
+            Timber.d(subpatternItem?.patternItemList.toString())
             viewModelScope.launch {
-                Timber.d(patternName.text.toString())
-                createPatternUseCase(
-                    patternName.text.toString(),
-                    subPatterns =
-                        subpatternItem?.patternItemList?.map {
-                            PatternItem(
-                                description = it?.content ?: "",
-                                isTitle = false
-                            )
-                        }?.plus(
-                            PatternItem(
-                                description = subpatternItem.subTitle ?: "",
-                                isTitle = true
 
-                            )
-                        ) ?: emptyList()
-                )
+                subpatternItem?.patternItemList?.map {
+                    PatternItem(
+                        description = it?.content?.text.toString()
+                    )
+                }?.plus(
+                    PatternItem(
+                        description = subpatternItem.subTitle.text.toString(),
+                        isTitle = true
+                    )
+                )?.let {
+                    createPatternUseCase(
+                        patternName.text.toString(),
+                        subPatterns =
+                            it
+                    )
+                }
             }
-
         }
     }
 }
